@@ -104,6 +104,12 @@ return [
             explode(',', env('APP_PREVIOUS_KEYS', ''))
         ),
     ],
+    // 'providers' => [
+    //     /*
+    //      * Package Service Providers...
+    //      */
+    //     Maatwebsite\Excel\ExcelServiceProvider::class,
+    // ],
 
     /*
     |--------------------------------------------------------------------------
