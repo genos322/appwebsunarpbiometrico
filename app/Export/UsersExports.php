@@ -29,9 +29,27 @@ class UsersExports implements FromCollection, WithEvents
         return [
             AfterSheet::class => function(AfterSheet $event) {
                 $sheet = $event->sheet;
-                // Aquí puedes agregar tus manipulaciones de la hoja de cálculo, como fusionar celdas, agregar estilos, etc.
-                $sheet->mergeCells('A1:E1');
-                $sheet->setCellValue('A1', 'Reporte de asistencias');
+                // selda tiene el tamaño de dos columnas
+                $sheet->getRowDimension(1)->setRowHeight(30); 
+                $sheet->mergeCells('A1:U1');
+                $sheet->setCellValue('A1', 'REPORTE DE ASISTENCIAS');
+                //AÑADIENDO NEGRITA A LA CELDA A1
+                $styleArray = [
+                    'font' => [
+                        'bold' => true,
+                        'size' => 20,
+                        'font' => 'Arial',
+                        //para mayusculas
+                        ''
+
+                    ],
+                    'alignment' => [
+                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                    ],
+                ];
+                $sheet->getStyle('A1')->applyFromArray($styleArray);
+                // Centrar horizontalmente
+                $sheet->setCellValue('A1', 'REPORTE DE ASISTENCIA DE LA ZONA REGISTRAL Nº XIV - SEDE AYACUCHO');
                 $sheet->setCellValue('A2', 'Tipo de contrato');
 
                 // Agregar tus propios datos
