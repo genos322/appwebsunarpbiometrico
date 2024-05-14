@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use Carbon\Carbon;
 
 class UsersExports implements FromCollection, WithEvents
 {
@@ -165,6 +166,22 @@ class UsersExports implements FromCollection, WithEvents
                         'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
                     ],
                 ];
+                $styleArrayData = [
+                    'font' => [
+                        'size' => 10,
+                        'font' => 'Arial',
+                    ],
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                            'color' => ['rgb' => '000000'], // Color
+                        ]
+                    ],
+                    'alignment' => [
+                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                    ],
+                ];
                 $sheet->getStyle('A1')->applyFromArray($styleArray);
                 $sheet->getStyle('A3:I3')->applyFromArray($styleArrayHeadBlue);
                 $sheet->getStyle('K3:L3')->applyFromArray($styleArrayHeadBlue);
@@ -174,22 +191,49 @@ class UsersExports implements FromCollection, WithEvents
                 $sheet->getStyle('M3')->applyFromArray($styleArrayHeadRed);
                 $sheet->getStyle('P3')->applyFromArray($styleArrayHeadRed);
                 $sheet->getStyle('S3:T3')->applyFromArray($styleArrayYellow);
-
+                //Crear una instancia de Carbon para el primer día del mes
+                $firstData = Carbon::instance(Date::excelToDateTimeObject($this->data[1][3]));
+                $monthDays = Carbon::createFromDate($firstData->format('Y'), $firstData->format('m'), 1);
+                $totalDays = $monthDays->daysInMonth;
                 foreach ($this->data as $rowIndex => $rowData) {
-                    if($rowIndex !== 1)
+                    if($rowIndex !== 0)
                     {
-                        // $fullName = explode(' ', $value[1]);
-                        // $apellidoPaterno = $fullName[0];
-                        // $apellidoMaterno = $fullName[1];
-                        // $nombres = $fullName[2];
-                        // if(count($fullName) > 3)
-                        // {
-                        //     $nombres = $nombres . ' ' . $fullName[3] . ' ' . $fullName[4] ?? '';
-                        // }
-                        $sheet->setCellValue('A'.$sheet->getHighestRow()+1, $value);
-                        foreach ($rowData as $columnIndex => $value) {
-                  
+                        $fullName = explode(' ', $rowData[1]);
+                        $apellidoPaterno = $fullName[0];
+                        $apellidoMaterno = $fullName[1];
+                        $nombres = $fullName[2];
+                        if(count($fullName) > 3)
+                        {
+                            $nombres = $nombres . ' ' . $fullName[3];
+                            if(isset($fullName[4]))
+                            {
+                                $nombres = $nombres . ' ' . $fullName[4];
+                            }
                         }
+                        $date = Carbon::instance(Date::excelToDateTimeObject($rowData[3]));
+                        $fecha = $date->format('d/m/Y');
+                        $hora = $date->format('h:i:s a');
+
+                        $sheet->setCellValue('B'.$sheet->getHighestRow()+1, $apellidoPaterno);
+                        $sheet->setCellValue('C'.$sheet->getHighestRow(), $apellidoMaterno);
+                        $sheet->setCellValue('D'.$sheet->getHighestRow(), $nombres);
+                        $sheet->setCellValue('E'.$sheet->getHighestRow(), $rowData[0]);
+                        $sheet->setCellValue('F'.$sheet->getHighestRow(), $totalDays);//unidad
+                        $sheet->setCellValue('G'.$sheet->getHighestRow(), '');//oficina
+                        $sheet->setCellValue('H'.$sheet->getHighestRow(), $fecha);//solo fecha dia mes año
+                        $sheet->setCellValue('I'.$sheet->getHighestRow(), $hora);//solo hora
+                        if()
+                        if($hora < '08:00:00')
+                        {
+                            $sheet->setCellValue('J'.$sheet->getHighestRow(), 0);//1° taranza
+                        }else{
+                            $hora = $date->subHours(8)->format('h:i:s a');
+                            $sheet->setCellValue('J'.$sheet->getHighestRow(), $hora);//1° taranza
+                        }
+                        
+                        //estética
+                        $sheet->autoSize(true);
+                        // $sheet->getStyle('A'.$sheet->getHighestRow().':T'.$sheet->getHighestRow())->applyFromArray($styleArrayData);//ajustar texto
                     }
                 }
                 
