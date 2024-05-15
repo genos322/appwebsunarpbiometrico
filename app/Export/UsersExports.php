@@ -191,10 +191,23 @@ class UsersExports implements FromCollection, WithEvents
                 $sheet->getStyle('M3')->applyFromArray($styleArrayHeadRed);
                 $sheet->getStyle('P3')->applyFromArray($styleArrayHeadRed);
                 $sheet->getStyle('S3:T3')->applyFromArray($styleArrayYellow);
+
                 //Crear una instancia de Carbon para el primer día del mes
                 $firstData = Carbon::instance(Date::excelToDateTimeObject($this->data[1][3]));
-                $monthDays = Carbon::createFromDate($firstData->format('Y'), $firstData->format('m'), 1);
+                $monthDays = Carbon::createFromDate($firstData->format('Y'), $firstData->format('m'), 1);//instancia con el primer dia del mes
                 $totalDays = $monthDays->daysInMonth;
+                $feriados = [];
+
+                $count = 0;//para temas de los 4 marcados
+                $lastDate = $firstData->format('d');
+                foreach (range(1, $totalDays) as $day) {
+                    $currentDate = Carbon::createFromDate($firstData->year, $firstData->month, $day);
+                    $dayName = $currentDate->format('l'); // Obtener el nombre del día en inglés
+                
+                    if ($dayName === 'Saturday' || $dayName === 'Sunday') {
+                        $feriados[] = $day; // Almacenar el día en el array si es sábado o domingo
+                    }
+                }
                 foreach ($this->data as $rowIndex => $rowData) {
                     if($rowIndex !== 0)
                     {
@@ -202,6 +215,10 @@ class UsersExports implements FromCollection, WithEvents
                         $apellidoPaterno = $fullName[0];
                         $apellidoMaterno = $fullName[1];
                         $nombres = $fullName[2];
+                        $date = Carbon::instance(Date::excelToDateTimeObject($rowData[3]));
+                        $fecha = $date->format('d/m/Y');
+                        $hora = $date->format('h:i:s a');
+
                         if(count($fullName) > 3)
                         {
                             $nombres = $nombres . ' ' . $fullName[3];
@@ -210,25 +227,65 @@ class UsersExports implements FromCollection, WithEvents
                                 $nombres = $nombres . ' ' . $fullName[4];
                             }
                         }
-                        $date = Carbon::instance(Date::excelToDateTimeObject($rowData[3]));
-                        $fecha = $date->format('d/m/Y');
-                        $hora = $date->format('h:i:s a');
+                        if($date->format('d') == 1)
+                        {
+                            $count++;
+                        }
 
+                        if($lastDate != $date->format('d'))
+                        {
+                            $count = 0;
+                            $lasDate = $date->format('d');
+                        }
+                        else{
+                            
+                        }
                         $sheet->setCellValue('B'.$sheet->getHighestRow()+1, $apellidoPaterno);
                         $sheet->setCellValue('C'.$sheet->getHighestRow(), $apellidoMaterno);
                         $sheet->setCellValue('D'.$sheet->getHighestRow(), $nombres);
                         $sheet->setCellValue('E'.$sheet->getHighestRow(), $rowData[0]);
-                        $sheet->setCellValue('F'.$sheet->getHighestRow(), $totalDays);//unidad
+                        $sheet->setCellValue('F'.$sheet->getHighestRow(), '');//unidad
                         $sheet->setCellValue('G'.$sheet->getHighestRow(), '');//oficina
                         $sheet->setCellValue('H'.$sheet->getHighestRow(), $fecha);//solo fecha dia mes año
                         $sheet->setCellValue('I'.$sheet->getHighestRow(), $hora);//solo hora
-                        if()
+                        //celda feriados
+                        if(in_array($date->format('d')-1, $feriados))
+                        {
+                            $sheet->setCellValue('B'.$sheet->getHighestRow()+1, $apellidoPaterno);
+                            $sheet->setCellValue('C'.$sheet->getHighestRow(), $apellidoMaterno);
+                            $sheet->setCellValue('D'.$sheet->getHighestRow(), $nombres);
+                            $sheet->setCellValue('E'.$sheet->getHighestRow(), $rowData[0]);
+                            $sheet->setCellValue('H'.$sheet->getHighestRow(), ($date->subDay())->format('d/m/Y'));  
+                            
+                            $sheet->getStyle('B'.$sheet->getHighestRow().':H'.$sheet->getHighestRow())->applyFromArray(
+                                ['font' => [
+                                'size' => 10,
+                                'font' => 'Arial',
+                                'color' => ['argb' => 'f70606'],
+                            ],]);
+                        }
+                        if (in_array($date->format('d')+1, $feriados)) {
+                            $sheet->setCellValue('B'.$sheet->getHighestRow()+1, $apellidoPaterno);
+                            $sheet->setCellValue('C'.$sheet->getHighestRow(), $apellidoMaterno);
+                            $sheet->setCellValue('D'.$sheet->getHighestRow(), $nombres);
+                            $sheet->setCellValue('E'.$sheet->getHighestRow(), $rowData[0]);
+                            $sheet->setCellValue('H'.$sheet->getHighestRow(), ($date->addDay())->format('d/m/Y'));//solo fecha dia mes año
+    
+                            $sheet->getStyle('B'.$sheet->getHighestRow().':H'.$sheet->getHighestRow())->applyFromArray(
+                                ['font' => [
+                                'size' => 10,
+                                'font' => 'Arial',
+                                'color' => ['argb' => 'f70606'],
+                            ],]);
+                            // $sheet->getStyle('S3:T3')->applyFromArray($styleArrayYellow);
+
+                        }
                         if($hora < '08:00:00')
                         {
-                            $sheet->setCellValue('J'.$sheet->getHighestRow(), 0);//1° taranza
+                            $sheet->setCellValue('J'.$sheet->getHighestRow(), 0);//1° tardanza
                         }else{
                             $hora = $date->subHours(8)->format('h:i:s a');
-                            $sheet->setCellValue('J'.$sheet->getHighestRow(), $hora);//1° taranza
+                            $sheet->setCellValue('J'.$sheet->getHighestRow(), $hora);//1° tardanza
                         }
                         
                         //estética
