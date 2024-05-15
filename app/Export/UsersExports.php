@@ -198,8 +198,7 @@ class UsersExports implements FromCollection, WithEvents
                 $totalDays = $monthDays->daysInMonth;
                 $feriados = [];
 
-                $count = 0;//para temas de los 4 marcados
-                $lastDate = $firstData->format('d');
+                $lastDate = $firstData->format('d');//fecha para el tema de los 4 marcados
                 foreach (range(1, $totalDays) as $day) {
                     $currentDate = Carbon::createFromDate($firstData->year, $firstData->month, $day);
                     $dayName = $currentDate->format('l'); // Obtener el nombre del día en inglés
@@ -234,11 +233,10 @@ class UsersExports implements FromCollection, WithEvents
 
                         if($lastDate != $date->format('d'))
                         {
-                            $count = 0;
                             $lasDate = $date->format('d');
                         }
                         else{
-                            
+
                         }
                         $sheet->setCellValue('B'.$sheet->getHighestRow()+1, $apellidoPaterno);
                         $sheet->setCellValue('C'.$sheet->getHighestRow(), $apellidoMaterno);
