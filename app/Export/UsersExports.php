@@ -197,6 +197,7 @@ class UsersExports implements FromCollection, WithEvents
                 $monthDays = Carbon::createFromDate($firstData->format('Y'), $firstData->format('m'), 1);//instancia con el primer dia del mes
                 $totalDays = $monthDays->daysInMonth;
                 $feriados = [];
+                $count=0;
 
                 $lastDate = $firstData->format('d');//fecha para el tema de los 4 marcados
                 foreach (range(1, $totalDays) as $day) {
@@ -228,24 +229,27 @@ class UsersExports implements FromCollection, WithEvents
                         }
                         if($date->format('d') == 1)
                         {
-                            $count++;
+                           
                         }
 
                         if($lastDate != $date->format('d'))
                         {
+                            $sheet->setCellValue('B'.$sheet->getHighestRow()+1, $apellidoPaterno);
+                            $sheet->setCellValue('C'.$sheet->getHighestRow(), $apellidoMaterno);
+                            $sheet->setCellValue('D'.$sheet->getHighestRow(), $nombres);
+                            $sheet->setCellValue('E'.$sheet->getHighestRow(), $rowData[0]);
+                            $sheet->setCellValue('F'.$sheet->getHighestRow(), '');//unidad
+                            $sheet->setCellValue('G'.$sheet->getHighestRow(), '');//oficina
+                            $sheet->setCellValue('H'.$sheet->getHighestRow(), $fecha);//solo fecha dia mes año
+                            $sheet->setCellValue('I'.$sheet->getHighestRow(), $hora);//solo hora
+                            
+                            $count++;
                             $lasDate = $date->format('d');
                         }
                         else{
 
                         }
-                        $sheet->setCellValue('B'.$sheet->getHighestRow()+1, $apellidoPaterno);
-                        $sheet->setCellValue('C'.$sheet->getHighestRow(), $apellidoMaterno);
-                        $sheet->setCellValue('D'.$sheet->getHighestRow(), $nombres);
-                        $sheet->setCellValue('E'.$sheet->getHighestRow(), $rowData[0]);
-                        $sheet->setCellValue('F'.$sheet->getHighestRow(), '');//unidad
-                        $sheet->setCellValue('G'.$sheet->getHighestRow(), '');//oficina
-                        $sheet->setCellValue('H'.$sheet->getHighestRow(), $fecha);//solo fecha dia mes año
-                        $sheet->setCellValue('I'.$sheet->getHighestRow(), $hora);//solo hora
+                       
                         //celda feriados
                         if(in_array($date->format('d')-1, $feriados))
                         {
