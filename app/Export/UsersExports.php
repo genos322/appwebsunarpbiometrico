@@ -227,28 +227,39 @@ class UsersExports implements FromCollection, WithEvents
                                 $nombres = $nombres . ' ' . $fullName[4];
                             }
                         }
-                        if($date->format('d') == 1)
-                        {
-                           
-                        }
 
-                        if($lastDate != $date->format('d'))
+                        if($lastDate == $date->format('d'))
                         {
-                            $sheet->setCellValue('B'.$sheet->getHighestRow()+1, $apellidoPaterno);
-                            $sheet->setCellValue('C'.$sheet->getHighestRow(), $apellidoMaterno);
-                            $sheet->setCellValue('D'.$sheet->getHighestRow(), $nombres);
-                            $sheet->setCellValue('E'.$sheet->getHighestRow(), $rowData[0]);
-                            $sheet->setCellValue('F'.$sheet->getHighestRow(), '');//unidad
-                            $sheet->setCellValue('G'.$sheet->getHighestRow(), '');//oficina
-                            $sheet->setCellValue('H'.$sheet->getHighestRow(), $fecha);//solo fecha dia mes año
-                            $sheet->setCellValue('I'.$sheet->getHighestRow(), $hora);//solo hora
+                            if($count == 0)
+                            {
+                                $sheet->setCellValue('B'.$sheet->getHighestRow()+1, $apellidoPaterno);
+                                $sheet->setCellValue('C'.$sheet->getHighestRow(), $apellidoMaterno);
+                                $sheet->setCellValue('D'.$sheet->getHighestRow(), $nombres);
+                                $sheet->setCellValue('E'.$sheet->getHighestRow(), $rowData[0]);
+                                $sheet->setCellValue('F'.$sheet->getHighestRow(), '');//unidad
+                                $sheet->setCellValue('G'.$sheet->getHighestRow(), '');//oficina
+                                $sheet->setCellValue('H'.$sheet->getHighestRow(), $fecha);//solo fecha dia mes año
+                                $sheet->setCellValue('I'.$sheet->getHighestRow(), $hora);//solo hora
+                            }
+                            if($count == 1)
+                            {
+                                $sheet->setCellValue('k'.$sheet->getHighestRow(), 'a');
+                            }
+                            if($count == 2)
+                            {
+                                $sheet->setCellValue('L'.$sheet->getHighestRow(), 'a');
+                            }
+                            if($count == 3)
+                            {
+                                $sheet->setCellValue('M'.$sheet->getHighestRow(), 'a');
+                                $count = -1;
+                            }
                             
                             $count++;
                             $lasDate = $date->format('d');
-                        }
-                        else{
+                        }                            
+                        $lasDate = $date->format('d');
 
-                        }
                        
                         //celda feriados
                         if(in_array($date->format('d')-1, $feriados))
