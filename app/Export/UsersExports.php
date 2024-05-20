@@ -197,16 +197,11 @@ class UsersExports implements FromCollection, WithEvents
                 $monthDays = Carbon::createFromDate($firstData->format('Y'), $firstData->format('m'), 1);//instancia con el primer dia del mes
                 $totalDays = $monthDays->daysInMonth;
                 $feriados = [];
-                $allDays = [];
                 $count=0;
-                $flagHoliday = 0;
-
-                $lastDate = $firstData->format('d');//fecha para el tema de los 4 marcados
+                $lastDate = 1;//fecha para el tema de los 4 marcados
                 foreach (range(1, $totalDays) as $day) {
                     $currentDate = Carbon::createFromDate($firstData->year, $firstData->month, $day);
-                    $dayName = $currentDate->format('l'); // Obtener el nombre del día en inglés
-                    $allDays[] = $day; // Almacenar el día en el array
-                
+                    $dayName = $currentDate->format('l'); // Obtener el nombre del día en inglés                
                     if ($dayName === 'Saturday' || $dayName === 'Sunday') {
                         $feriados[] = $day; // Almacenar el día en el array si es sábado o domingo
                     }
@@ -230,63 +225,56 @@ class UsersExports implements FromCollection, WithEvents
                                 $nombres = $nombres . ' ' . $fullName[4];
                             }
                         }
-                        $lasDate = $date->format('d');
-
-                     
-                        if(!in_array($lasDate, $feriados))
-                        {
-                            if($count == 0)
-                            {
-                                $sheet->setCellValue('B'.$sheet->getHighestRow()+1, $apellidoPaterno);
-                                $sheet->setCellValue('C'.$sheet->getHighestRow(), $apellidoMaterno);
-                                $sheet->setCellValue('D'.$sheet->getHighestRow(), $nombres);
-                                $sheet->setCellValue('E'.$sheet->getHighestRow(), $rowData[0]);
-                                $sheet->setCellValue('F'.$sheet->getHighestRow(), '');//unidad
-                                $sheet->setCellValue('G'.$sheet->getHighestRow(), '');//oficina
-                                $sheet->setCellValue('H'.$sheet->getHighestRow(), $fecha);//solo fecha dia mes año
-                                $sheet->setCellValue('I'.$sheet->getHighestRow(), $hora);//solo hora
-                                $flagHoliday = 0;
-
-                            }
-                            if($count == 1)
-                            {
-                                $sheet->setCellValue('k'.$sheet->getHighestRow(), $feriados[0]);
-                            }
-                            if($count == 2)
-                            {
-                                $sheet->setCellValue('L'.$sheet->getHighestRow(), $feriados[1]);
-
-                            }
-                            if($count == 3)
-                            {
-                                $sheet->setCellValue('M'.$sheet->getHighestRow(), $feriados[2]);
-                                $count = -1;
-                            }
-                            $count++;
-                        }                            
-                        if (in_array($lasDate+1, $feriados) && $flagHoliday == 0) {
-                            for($i=0; $i<2; $i++)
-                            {
-                                $sheet->setCellValue('B'.$sheet->getHighestRow()+1, $apellidoPaterno);
-                                $sheet->setCellValue('C'.$sheet->getHighestRow(), $apellidoMaterno);
-                                $sheet->setCellValue('D'.$sheet->getHighestRow(), $nombres);
-                                $sheet->setCellValue('E'.$sheet->getHighestRow(), $rowData[0]);
-                                $sheet->setCellValue('H'.$sheet->getHighestRow(), ($date->addDay())->format('d/m/Y'));//solo fecha dia mes año
-        
-                                $sheet->getStyle('B'.$sheet->getHighestRow().':H'.$sheet->getHighestRow())->applyFromArray(
-                                    ['font' => [
-                                    'size' => 10,
-                                    'font' => 'Arial',
-                                    'color' => ['argb' => 'f70606'],
-                                ],]);
-                            }
-                            // $sheet->getStyle('S3:T3')->applyFromArray($styleArrayYellow);
-                            $flagHoliday = 1;
-                        }
-
                        
-                        //celda feriados
+                        if($count == 0)
+                        {
+                            $sheet->setCellValue('B'.$sheet->getHighestRow()+1, $apellidoPaterno);
+                            $sheet->setCellValue('C'.$sheet->getHighestRow(), $apellidoMaterno);
+                            $sheet->setCellValue('D'.$sheet->getHighestRow(), $nombres);
+                            $sheet->setCellValue('E'.$sheet->getHighestRow(), $rowData[0]);
+                            $sheet->setCellValue('F'.$sheet->getHighestRow(), '');//unidad
+                            $sheet->setCellValue('G'.$sheet->getHighestRow(), '');//oficina
+                            $sheet->setCellValue('H'.$sheet->getHighestRow(), $fecha);//solo fecha dia mes año
+                            $sheet->setCellValue('I'.$sheet->getHighestRow(), $hora);//solo hora
+                            $lastDate = $date->format('d');
+                        }
+                        if($count == 1 && $lastDate == $date->format('d'))
+                        {
+                            $sheet->setCellValue('k'.$sheet->getHighestRow(), $hora);
+                        }
+                        if($count == 2 && $lastDate == $date->format('d'))
+                        {
+                            $sheet->setCellValue('L'.$sheet->getHighestRow(), $hora);
+                        }
+                        if($count == 3 && $lastDate == $date->format('d'))
+                        {
+                            $sheet->setCellValue('N'.$sheet->getHighestRow(), $hora);
+                            $count = -1;
+                        }
+                        if($lastDate != $date->format('d')){
+                            $count = -1;
+                            $lastDate = $date->format('d');
+                        }
+                        $count++;
                       
+                        // if (in_array($lasDate+1, $feriados) && $flagHoliday == 0) {// se añadió el flag holiday para que no se repita, ya que se añade 4 veces
+                        //     for($i=0; $i<2; $i++)
+                        //     {
+                        //         $sheet->setCellValue('B'.$sheet->getHighestRow()+1, $apellidoPaterno);
+                        //         $sheet->setCellValue('C'.$sheet->getHighestRow(), $apellidoMaterno);
+                        //         $sheet->setCellValue('D'.$sheet->getHighestRow(), $nombres);
+                        //         $sheet->setCellValue('E'.$sheet->getHighestRow(), $rowData[0]);
+                        //         $sheet->setCellValue('H'.$sheet->getHighestRow(), ($date->addDay())->format('d/m/Y'));//solo fecha dia mes año
+        
+                        //         $sheet->getStyle('B'.$sheet->getHighestRow().':H'.$sheet->getHighestRow())->applyFromArray(
+                        //             ['font' => [
+                        //             'size' => 11,
+                        //             'font' => 'Arial',
+                        //             'color' => ['argb' => 'f70606'],
+                        //         ],]);
+                        //     }
+                        //     $flagHoliday = 1;
+                        // }
                         if($hora < '08:00:00')
                         {
                             $sheet->setCellValue('J'.$sheet->getHighestRow(), 0);//1° tardanza
@@ -297,7 +285,6 @@ class UsersExports implements FromCollection, WithEvents
                         
                         //estética
                         $sheet->autoSize(true);
-                        // $sheet->getStyle('A'.$sheet->getHighestRow().':T'.$sheet->getHighestRow())->applyFromArray($styleArrayData);//ajustar texto
                     }
                 }
                 
