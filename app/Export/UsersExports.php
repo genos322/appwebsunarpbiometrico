@@ -207,8 +207,7 @@ class UsersExports implements FromCollection, WithEvents
                     }
                 }
                 foreach ($this->data as $rowIndex => $rowData) {
-                    if($rowIndex !== 0)
-                    {
+                    if ($rowIndex !== 0) {
                         $fullName = explode(' ', $rowData[1]);
                         $apellidoPaterno = $fullName[0];
                         $apellidoMaterno = $fullName[1];
@@ -216,74 +215,49 @@ class UsersExports implements FromCollection, WithEvents
                         $date = Carbon::instance(Date::excelToDateTimeObject($rowData[3]));
                         $fecha = $date->format('d/m/Y');
                         $hora = $date->format('h:i:s a');
-
-                        if(count($fullName) > 3)
-                        {
+                
+                        if (count($fullName) > 3) {
                             $nombres = $nombres . ' ' . $fullName[3];
-                            if(isset($fullName[4]))
-                            {
+                            if (isset($fullName[4])) {
                                 $nombres = $nombres . ' ' . $fullName[4];
                             }
                         }
-                       
-                        if($count == 0)
-                        {
-                            $sheet->setCellValue('B'.$sheet->getHighestRow()+1, $apellidoPaterno);
-                            $sheet->setCellValue('C'.$sheet->getHighestRow(), $apellidoMaterno);
-                            $sheet->setCellValue('D'.$sheet->getHighestRow(), $nombres);
-                            $sheet->setCellValue('E'.$sheet->getHighestRow(), $rowData[0]);
-                            $sheet->setCellValue('F'.$sheet->getHighestRow(), '');//unidad
-                            $sheet->setCellValue('G'.$sheet->getHighestRow(), '');//oficina
-                            $sheet->setCellValue('H'.$sheet->getHighestRow(), $fecha);//solo fecha dia mes año
-                            $sheet->setCellValue('I'.$sheet->getHighestRow(), $hora);//solo hora
+                
+                        // Comenzar nueva fila si es un nuevo día
+                        if ($count == 0 || $lastDate != $date->format('d')) {
+                            $sheet->setCellValue('B' . ($sheet->getHighestRow() + 1), $apellidoPaterno);
+                            $sheet->setCellValue('C' . $sheet->getHighestRow(), $apellidoMaterno);
+                            $sheet->setCellValue('D' . $sheet->getHighestRow(), $nombres);
+                            $sheet->setCellValue('E' . $sheet->getHighestRow(), $rowData[0]);
+                            $sheet->setCellValue('F' . $sheet->getHighestRow(), ''); // unidad
+                            $sheet->setCellValue('G' . $sheet->getHighestRow(), ''); // oficina
+                            $sheet->setCellValue('H' . $sheet->getHighestRow(), $fecha); // solo fecha día mes año
+                            $sheet->setCellValue('I' . $sheet->getHighestRow(), $hora); // solo hora
                             $lastDate = $date->format('d');
+                            $count = 1; // Reiniciar el contador para el nuevo día
+                        } else {
+                            if ($count == 1) {
+                                $sheet->setCellValue('K' . $sheet->getHighestRow(), $hora);
+                            }
+                            if ($count == 2) {
+                                $sheet->setCellValue('L' . $sheet->getHighestRow(), $hora);
+                            }
+                            if ($count == 3) {
+                                $sheet->setCellValue('N' . $sheet->getHighestRow(), $hora);
+                                $count = 0; // Reiniciar el contador para el próximo registro de entrada
+                            }
+                            $count++;
                         }
-                        if($count == 1 && $lastDate == $date->format('d'))
-                        {
-                            $sheet->setCellValue('k'.$sheet->getHighestRow(), $hora);
+                
+                        // Calcular y establecer la tardanza
+                        if ($hora < '08:00:00') {
+                            $sheet->setCellValue('J' . $sheet->getHighestRow(), 0); // 1° tardanza
+                        } else {
+                            $tardanza = Carbon::instance(Date::excelToDateTimeObject($rowData[3]))->subHours(8)->format('h:i:s a');
+                            $sheet->setCellValue('J' . $sheet->getHighestRow(), $tardanza); // 1° tardanza
                         }
-                        if($count == 2 && $lastDate == $date->format('d'))
-                        {
-                            $sheet->setCellValue('L'.$sheet->getHighestRow(), $hora);
-                        }
-                        if($count == 3 && $lastDate == $date->format('d'))
-                        {
-                            $sheet->setCellValue('N'.$sheet->getHighestRow(), $hora);
-                            $count = -1;
-                        }
-                        if($lastDate != $date->format('d')){
-                            $count = -1;
-                            $lastDate = $date->format('d');
-                        }
-                        $count++;
-                      
-                        // if (in_array($lasDate+1, $feriados) && $flagHoliday == 0) {// se añadió el flag holiday para que no se repita, ya que se añade 4 veces
-                        //     for($i=0; $i<2; $i++)
-                        //     {
-                        //         $sheet->setCellValue('B'.$sheet->getHighestRow()+1, $apellidoPaterno);
-                        //         $sheet->setCellValue('C'.$sheet->getHighestRow(), $apellidoMaterno);
-                        //         $sheet->setCellValue('D'.$sheet->getHighestRow(), $nombres);
-                        //         $sheet->setCellValue('E'.$sheet->getHighestRow(), $rowData[0]);
-                        //         $sheet->setCellValue('H'.$sheet->getHighestRow(), ($date->addDay())->format('d/m/Y'));//solo fecha dia mes año
-        
-                        //         $sheet->getStyle('B'.$sheet->getHighestRow().':H'.$sheet->getHighestRow())->applyFromArray(
-                        //             ['font' => [
-                        //             'size' => 11,
-                        //             'font' => 'Arial',
-                        //             'color' => ['argb' => 'f70606'],
-                        //         ],]);
-                        //     }
-                        //     $flagHoliday = 1;
-                        // }
-                        if($hora < '08:00:00')
-                        {
-                            $sheet->setCellValue('J'.$sheet->getHighestRow(), 0);//1° tardanza
-                        }else{
-                            $hora = $date->subHours(8)->format('h:i:s a');
-                            $sheet->setCellValue('J'.$sheet->getHighestRow(), $hora);//1° tardanza
-                        }
-                        
-                        //estética
+                
+                        // Estética
                         $sheet->autoSize(true);
                     }
                 }
