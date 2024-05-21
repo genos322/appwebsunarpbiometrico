@@ -248,15 +248,60 @@ class UsersExports implements FromCollection, WithEvents
                             }
                             $count++;
                         }
-                
-                        // Calcular y establecer la tardanza
-                        if ($hora < '08:00:00') {
+                        //para el primer marcado - primera tardanza
+                        $horaEntrada = Carbon::createFromFormat('h:i:s a', $sheet->getCell('I' . $sheet->getHighestRow())->getValue());
+                        $horaLimite = Carbon::createFromTime(8, 0, 0);
+                        if ($horaEntrada->lessThanOrEqualTo($horaLimite)) {
                             $sheet->setCellValue('J' . $sheet->getHighestRow(), 0); // 1° tardanza
                         } else {
-                            $tardanza = Carbon::instance(Date::excelToDateTimeObject($rowData[3]))->subHours(8)->format('h:i:s a');
+                            $tardanza = $horaEntrada->diff($horaLimite)->format('%H:%I:%S');
                             $sheet->setCellValue('J' . $sheet->getHighestRow(), $tardanza); // 1° tardanza
                         }
+                        //para el segundo marcado - segunda tardanza
+                        $horaFinManana = $sheet->getCell('K' . $sheet->getHighestRow())->getValue();
+                        $horaInicioTarde = $sheet->getCell('L' . $sheet->getHighestRow())->getValue();
                 
+                        if ($horaFinManana && $horaInicioTarde) {
+                            $horaFinMananaCarbon = Carbon::createFromFormat('h:i:s a', $horaFinManana);
+                            $horaInicioTardeCarbon = Carbon::createFromFormat('h:i:s a', $horaInicioTarde);
+                            $diferencia = $horaFinMananaCarbon->diffInSeconds($horaInicioTardeCarbon);
+                            
+                            // Si la diferencia es mayor a una hora (3600 segundos), restar una hora
+                            if ($diferencia > 3600) {
+                                $excesoTiempo = gmdate('H:i:s', $diferencia - 3600); // Resta 3600 segundos (1 hora)
+                                $sheet->setCellValue('M' . $sheet->getHighestRow(), $excesoTiempo); // Exceso de tiempo
+                            } else {
+                                $sheet->setCellValue('M' . $sheet->getHighestRow(), ''); // No hay exceso de tiempo
+                            }
+                        } else {
+                            $sheet->setCellValue('M' . $sheet->getHighestRow(), ''); // No hay exceso de tiempo
+                        }
+                        //sumar el total de tardanza diaria
+                        $cellValue1 = $sheet->getCell('J'.$sheet->getHighestRow())->getValue(); // Asume que 'A1' es la primera celda
+                        $cellValue2 = $sheet->getCell('M'.$sheet->getHighestRow())->getValue(); // Asume que 'A2' es la segunda celda
+
+                        // Verifica si las celdas están vacías, si es así, establece el valor en '00:00:00'
+                        $cellValue1 = (!empty($cellValue1)) ? $cellValue1 : '00:00:00';
+                        $cellValue2 = (!empty($cellValue2)) ? $cellValue2 : '00:00:00';
+
+                        // Convierte los valores de las celdas a objetos Carbon
+                        $time1 = Carbon::createFromFormat('H:i:s', $cellValue1);
+                        $time2 = Carbon::createFromFormat('H:i:s', $cellValue2);
+
+                        // Suma los tiempos
+                        $sumTime = $time1->addHours($time2->hour)
+                                        ->addMinutes($time2->minute)
+                                        ->addSeconds($time2->second);
+
+                        // Formatea el tiempo sumado de vuelta a una cadena
+                        $sumTimeString = $sumTime->format('H:i:s');
+
+                        // Establece el valor de la celda sumada
+                        $sheet->setCellValue('O'.$sheet->getHighestRow(), $sumTimeString);
+
+
+
+                                
                         // Estética
                         $sheet->autoSize(true);
                     }
