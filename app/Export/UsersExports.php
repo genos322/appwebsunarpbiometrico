@@ -69,7 +69,7 @@ class UsersExports implements FromCollection, WithEvents
                     $cont++;
                 }
                 $sheet->getStyle('F2:Q2')->getNumberFormat()->setFormatCode('hh:mm:ss AM/PM');//'formatCode' => NumberFormat::FORMAT_DATE_TIME6,
-                $sheet->setCellValue('A3', 'USUARIO');
+                $sheet->setCellValue('A3', 'N° DNI');
                 $sheet->setCellValue('B3', 'APELLIDO PARTERNO');
                 $sheet->setCellValue('C3', 'APELLIDO MATERNO');
                 $sheet->setCellValue('D3', 'NOMBRES');
@@ -199,6 +199,10 @@ class UsersExports implements FromCollection, WithEvents
                 $feriados = [];
                 $count=0;
                 $lastDate = 1;//fecha para el tema de los 4 marcados
+                $allDni = [];
+                $lastDni = $this->data[1][2];
+                $sumsByDNI = [];
+                $rowIndexesByDNI = [];
                 foreach (range(1, $totalDays) as $day) {
                     $currentDate = Carbon::createFromDate($firstData->year, $firstData->month, $day);
                     $dayName = $currentDate->format('l'); // Obtener el nombre del día en inglés                
@@ -215,6 +219,8 @@ class UsersExports implements FromCollection, WithEvents
                         $date = Carbon::instance(Date::excelToDateTimeObject($rowData[3]));
                         $fecha = $date->format('d/m/Y');
                         $hora = $date->format('h:i:s a');
+                        $dni = $rowData[2];
+                        $sumaTotal;
                 
                         if (count($fullName) > 3) {
                             $nombres = $nombres . ' ' . $fullName[3];
@@ -225,7 +231,8 @@ class UsersExports implements FromCollection, WithEvents
                 
                         // Comenzar nueva fila si es un nuevo día
                         if ($count == 0 || $lastDate != $date->format('d')) {
-                            $sheet->setCellValue('B' . ($sheet->getHighestRow() + 1), $apellidoPaterno);
+                            $sheet->setCellValue('A' . ($sheet->getHighestRow() + 1), $rowData[2]);
+                            $sheet->setCellValue('B' . ($sheet->getHighestRow()), $apellidoPaterno);
                             $sheet->setCellValue('C' . $sheet->getHighestRow(), $apellidoMaterno);
                             $sheet->setCellValue('D' . $sheet->getHighestRow(), $nombres);
                             $sheet->setCellValue('E' . $sheet->getHighestRow(), $rowData[0]);
@@ -277,8 +284,8 @@ class UsersExports implements FromCollection, WithEvents
                             $sheet->setCellValue('M' . $sheet->getHighestRow(), ''); // No hay exceso de tiempo
                         }
                         //sumar el total de tardanza diaria
-                        $cellValue1 = $sheet->getCell('J'.$sheet->getHighestRow())->getValue(); // Asume que 'A1' es la primera celda
-                        $cellValue2 = $sheet->getCell('M'.$sheet->getHighestRow())->getValue(); // Asume que 'A2' es la segunda celda
+                        $cellValue1 = $sheet->getCell('J'.$sheet->getHighestRow())->getValue();
+                        $cellValue2 = $sheet->getCell('M'.$sheet->getHighestRow())->getValue();
 
                         // Verifica si las celdas están vacías, si es así, establece el valor en '00:00:00'
                         $cellValue1 = (!empty($cellValue1)) ? $cellValue1 : '00:00:00';
@@ -298,15 +305,35 @@ class UsersExports implements FromCollection, WithEvents
 
                         // Establece el valor de la celda sumada
                         $sheet->setCellValue('O'.$sheet->getHighestRow(), $sumTimeString);
-
-
-
-                                
+                        //suma total de tardanza acumulada, vaildando si mantiene el dni
+                        if(!in_array($dni, $allDni))
+                        {
+                            $allDni[] = $rowData[2];
+                            $sumsByDNI[$dni] = Carbon::createFromFormat('H:i:s', $sumTimeString);
+                        }
+                        if($lastDni == $dni)
+                        {
+                            $sumaTotal = $sumsByDNI[$dni]->addHours($sumTime->hour)
+                                        ->addMinutes($sumTime->minute)
+                                        ->addSeconds($sumTime->second);
+                            $sumsByDNI[$dni] = $sumaTotal;
+                        }
+                        else
+                        {
+                            $lastDni = $dni;
+                        }
                         // Estética
                         $sheet->autoSize(true);
                     }
                 }
-                
+                $sheet->setCellValue('R4',$allDni[0]);
+                $sheet->setCellValue('R5',$allDni[1]);
+                $sheet->setCellValue('R6',$sumsByDNI[$allDni[0]]);
+                foreach($sumsByDNI as $dni => $sum)
+                {
+                    $sheet->setCellValue('R'.$sheet->getHighestRow()+1,$sum);
+                    $sheet->setCellValue('R'.$sheet->getHighestRow()+1,$dni);
+                }
                 // Crear otra hoja
                 $additionalSheet = new Worksheet(null, 'Otra hoja');
                 $event->sheet->getParent()->addSheet($additionalSheet);
