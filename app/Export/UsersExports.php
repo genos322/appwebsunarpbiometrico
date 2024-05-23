@@ -200,9 +200,10 @@ class UsersExports implements FromCollection, WithEvents
                 $count=0;
                 $lastDate = 1;//fecha para el tema de los 4 marcados
                 $allDni = [];
+                $count2 = 0;
                 $lastDni = $this->data[1][2];
-                $sumsByDNI = [];
                 $rowIndexesByDNI = [];
+                $data = '';
                 foreach (range(1, $totalDays) as $day) {
                     $currentDate = Carbon::createFromDate($firstData->year, $firstData->month, $day);
                     $dayName = $currentDate->format('l'); // Obtener el nombre del día en inglés                
@@ -305,6 +306,8 @@ class UsersExports implements FromCollection, WithEvents
 
                         // Establece el valor de la celda sumada
                         $sheet->setCellValue('O'.$sheet->getHighestRow(), $sumTimeString);
+                        $timee = $sheet->getCell('O'.$sheet->getHighestRow())->getValue();
+                        $tiempo = Carbon::createFromFormat('H:i:s', $timee);
                         //suma total de tardanza acumulada, vaildando si mantiene el dni
                         if(!in_array($dni, $allDni))
                         {
@@ -313,10 +316,16 @@ class UsersExports implements FromCollection, WithEvents
                         }
                         if($lastDni == $dni)
                         {
-                            $sumaTotal = $sumsByDNI[$dni]->addHours($sumTime->hour)
-                                        ->addMinutes($sumTime->minute)
-                                        ->addSeconds($sumTime->second);
+                            $sumaTotal = $sumsByDNI[$dni]->addHours($tiempo->hour)
+                                        ->addMinutes($tiempo->minute)
+                                        ->addSeconds($tiempo->second);
                             $sumsByDNI[$dni] = $sumaTotal;
+                            if($count2 < 10)
+                            {
+                                $data =$data.'-'.$tiempo->format('H:i:s');
+                                $count2++;
+
+                            }
                         }
                         else
                         {
@@ -327,15 +336,15 @@ class UsersExports implements FromCollection, WithEvents
                     }
                 }
                 $sheet->setCellValue('R4',$allDni[0]);
-                $sheet->setCellValue('R5',$allDni[1]);
+                $sheet->setCellValue('S4',$data);
                 $sheet->setCellValue('R6',$sumsByDNI[$allDni[0]]);
                 foreach($sumsByDNI as $dni => $sum)
                 {
-                    $sheet->setCellValue('R'.$sheet->getHighestRow()+1,$sum);
+                    $sheet->setCellValue('R'.$sheet->getHighestRow()+1,$sum->format('H:i:s'));
                     $sheet->setCellValue('R'.$sheet->getHighestRow()+1,$dni);
                 }
                 // Crear otra hoja
-                $additionalSheet = new Worksheet(null, 'Otra hoja');
+                $additionalSheet = new Worksheet(null, 'Other page');
                 $event->sheet->getParent()->addSheet($additionalSheet);
 
                 // Agregar datos a la otra hoja
