@@ -192,6 +192,9 @@ class UsersExports implements FromCollection, WithEvents
                 $sheet->getStyle('P3')->applyFromArray($styleArrayHeadRed);
                 $sheet->getStyle('S3:T3')->applyFromArray($styleArrayYellow);
 
+                $sheet->freezePane('A4');
+                $sheet->freezePane('J4');
+
                 //Crear una instancia de Carbon para el primer día del mes
                 $firstData = Carbon::instance(Date::excelToDateTimeObject($this->data[1][3]));
                 $monthDays = Carbon::createFromDate($firstData->format('Y'), $firstData->format('m'), 1);//instancia con el primer dia del mes
@@ -199,11 +202,14 @@ class UsersExports implements FromCollection, WithEvents
                 $feriados = [];
                 $count=0;
                 $lastDate = 1;//fecha para el tema de los 4 marcados
+                $lastDate2 = 1;
                 $allDni = [];
-                $count2 = 0;
                 $lastDni = $this->data[1][2];
                 $rowIndexesByDNI = [];
                 $data = '';
+                $indice = [];
+                $flag = 0;
+                $sumaTotal = Carbon::createFromTime(0, 0, 0);
                 foreach (range(1, $totalDays) as $day) {
                     $currentDate = Carbon::createFromDate($firstData->year, $firstData->month, $day);
                     $dayName = $currentDate->format('l'); // Obtener el nombre del día en inglés                
@@ -221,7 +227,6 @@ class UsersExports implements FromCollection, WithEvents
                         $fecha = $date->format('d/m/Y');
                         $hora = $date->format('h:i:s a');
                         $dni = $rowData[2];
-                        $sumaTotal;
                 
                         if (count($fullName) > 3) {
                             $nombres = $nombres . ' ' . $fullName[3];
@@ -243,6 +248,7 @@ class UsersExports implements FromCollection, WithEvents
                             $sheet->setCellValue('I' . $sheet->getHighestRow(), $hora); // solo hora
                             $lastDate = $date->format('d');
                             $count = 1; // Reiniciar el contador para el nuevo día
+                            $indice[] = $sheet->getHighestRow();
                         } else {
                             if ($count == 1) {
                                 $sheet->setCellValue('K' . $sheet->getHighestRow(), $hora);
@@ -306,42 +312,91 @@ class UsersExports implements FromCollection, WithEvents
 
                         // Establece el valor de la celda sumada
                         $sheet->setCellValue('O'.$sheet->getHighestRow(), $sumTimeString);
-                        $timee = $sheet->getCell('O'.$sheet->getHighestRow())->getValue();
-                        $tiempo = Carbon::createFromFormat('H:i:s', $timee);
                         //suma total de tardanza acumulada, vaildando si mantiene el dni
                         if(!in_array($dni, $allDni))
                         {
                             $allDni[] = $rowData[2];
                             $sumsByDNI[$dni] = Carbon::createFromFormat('H:i:s', $sumTimeString);
                         }
-                        if($lastDni == $dni)
-                        {
-                            $sumaTotal = $sumsByDNI[$dni]->addHours($tiempo->hour)
-                                        ->addMinutes($tiempo->minute)
-                                        ->addSeconds($tiempo->second);
-                            $sumsByDNI[$dni] = $sumaTotal;
-                            if($count2 < 10)
-                            {
-                                $data =$data.'-'.$tiempo->format('H:i:s');
-                                $count2++;
-
-                            }
-                        }
-                        else
-                        {
-                            $lastDni = $dni;
-                        }
+                        // if($lastDate2 != $date->format('d'))
+                        // {
+                        //     $sumaTotal = $sumsByDNI[$dni]->addHours($lastData->hour)
+                        //                                 ->addMinutes($lastData->minute)
+                        //                                 ->addSeconds($lastData->second);
+                        //     $sumsByDNI[$dni] = $sumaTotal;
+                        //     $lastDate2 = $date->format('d');
+                        // }
+                        // else{
+                        //     $lastData = Carbon::createFromFormat('H:i:s', $sumTimeString);
+                        // }
+                        // if($lastDni == $dni && $count == 3)
+                        // {
+                        //     $sumaTotal = $sumsByDNI[$dni]->addHours($lastData->hour)
+                        //     ->addMinutes($lastData->minute)
+                        //     ->addSeconds($lastData->second);
+                        //     $sumsByDNI[$dni] = $sumaTotal;
+                        // }
+                        // else
+                        // {
+                        //     $lastDni = $dni;
+                        // }
                         // Estética
                         $sheet->autoSize(true);
                     }
                 }
-                $sheet->setCellValue('R4',$allDni[0]);
-                $sheet->setCellValue('S4',$data);
-                $sheet->setCellValue('R6',$sumsByDNI[$allDni[0]]);
-                foreach($sumsByDNI as $dni => $sum)
+                //sumar el total de tardanza acumulada
+                foreach($indice as $key => $data)
                 {
-                    $sheet->setCellValue('R'.$sheet->getHighestRow()+1,$sum->format('H:i:s'));
-                    $sheet->setCellValue('R'.$sheet->getHighestRow()+1,$dni);
+                    $datos = $sheet->getCell('O'.$data)->getValue();
+                    $sum = Carbon::createFromFormat('H:i:s', $datos);
+                    if($sheet->getCell('A'.$data)->getValue() == $sheet->getCell('A'.($data+1))->getValue())
+                    {
+                        if($sumaTotal->hour == 0 && $sumaTotal->minute == 0 && $sumaTotal->second == 0 && $flag == 0)
+                        {
+                            $firstRow = $data;
+                            $flag = 1;
+                        }
+                        $sumaTotal = $sumaTotal
+                        ->addHours($sum->hour)
+                        ->addMinutes($sum->minute)
+                        ->addSeconds($sum->second);
+                        
+                    }
+                    else
+                    {
+                        $sheet->mergeCells('P'.($firstRow).':P'.($data));
+                        $sheet->getStyle('A'.$firstRow.':T'.$data)->applyFromArray([
+                            'borders' => [
+                                'allBorders' => [
+                                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                                    'color' => ['rgb' => '000000'], // Color
+                                ]
+                            ],
+                        ]);
+                        $sheet->getStyle('P'.$firstRow.':P'.$data)->applyFromArray([
+                            'fill' => [
+                                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                                'color' => ['rgb' => 'b29de5'],
+                            ],
+                            'borders' => [
+                                'allBorders' => [
+                                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                                    'color' => ['rgb' => '000000'], // Color
+                                ]
+                            ],
+                            'alignment' => [
+                                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                            ],
+                        ]);
+                        $sumaTotal = $sumaTotal
+                        ->addHours($sum->hour)
+                        ->addMinutes($sum->minute)
+                        ->addSeconds($sum->second);
+                        $sheet->setCellValue('P'.$firstRow,$sumaTotal->format('H:i:s'));
+                        $sumaTotal = Carbon::createFromTime(0, 0, 0);
+                        $flag = 0;
+                    }
                 }
                 // Crear otra hoja
                 $additionalSheet = new Worksheet(null, 'Other page');
