@@ -44,6 +44,7 @@ class UsersExports implements FromCollection, WithEvents
                 $sheet->setCellValue('A2', 'Tipo de contrato');
                 $cont = 0;
                 $contAlmuerzo = 0;
+                $contExtra = 0;
                 $hora = 17;
                 $minutos = 0;
                 $column = 'H';
@@ -86,10 +87,11 @@ class UsersExports implements FromCollection, WithEvents
                 $sheet->setCellValue('N3', 'HORA DE SALIDA');
                 $sheet->setCellValue('O3', 'TARDANZA POR DÍA');
                 $sheet->setCellValue('P3', 'TARDANZA ACUMULADA');
-                $sheet->setCellValue('Q3', 'DESCUENTO TARDANZA');
-                $sheet->setCellValue('R3', 'SOBRETIEMPO');
-                $sheet->setCellValue('S3', 'OBSERVACIÓN');
-                $sheet->setCellValue('T3', 'ENCARGATURA DE APOYO');
+                $sheet->setCellValue('Q3', 'ASISTENCIA ADICIONAL');$sheet->mergeCells('Q3:R3');
+                $sheet->setCellValue('S3', 'DESCUENTO TARDANZA');
+                $sheet->setCellValue('T3', 'SOBRETIEMPO');
+                $sheet->setCellValue('U3', 'OBSERVACIÓN');
+                $sheet->setCellValue('V3', 'ENCARGATURA DE APOYO');
                 $styleArray = [
                     'font' => [
                         'bold' => true,
@@ -187,11 +189,11 @@ class UsersExports implements FromCollection, WithEvents
                 $sheet->getStyle('A3:I3')->applyFromArray($styleArrayHeadBlue);
                 $sheet->getStyle('K3:L3')->applyFromArray($styleArrayHeadBlue);
                 $sheet->getStyle('N3:O3')->applyFromArray($styleArrayHeadBlue);
-                $sheet->getStyle('Q3:R3')->applyFromArray($styleArrayHeadBlue);
+                $sheet->getStyle('Q3:T3')->applyFromArray($styleArrayHeadBlue);
                 $sheet->getStyle('J3')->applyFromArray($styleArrayHeadRed);
                 $sheet->getStyle('M3')->applyFromArray($styleArrayHeadRed);
                 $sheet->getStyle('P3')->applyFromArray($styleArrayHeadRed);
-                $sheet->getStyle('S3:T3')->applyFromArray($styleArrayYellow);
+                $sheet->getStyle('U3:V3')->applyFromArray($styleArrayYellow);
 
                 $sheet->freezePane('A4');
                 $sheet->freezePane('J4');
@@ -249,7 +251,7 @@ class UsersExports implements FromCollection, WithEvents
                             $lastDate = $date->format('d');
                             $indice[] = $sheet->getHighestRow();
                         } else {
-                            if ($date->hour >= 12 && $date->hour <= 15) {
+                            if ($date->hour >= 12 && $date->hour <= 16) {
                                 if ($contAlmuerzo == 0) {
                                     $sheet->setCellValue('K' . $sheet->getHighestRow(), $hora);
                                     $contAlmuerzo++;
@@ -259,8 +261,20 @@ class UsersExports implements FromCollection, WithEvents
                                 }
                             } elseif ($date->hour >= 17) {
                                 $sheet->setCellValue('N' . $sheet->getHighestRow(), $hora);
+                            }else {
+                                if($contExtra == 0)
+                                {
+                                    $sheet->setCellValue('Q' . $sheet->getHighestRow(), $hora);
+                                    $contExtra++;
+                                }
+                                elseif($contExtra == 1)
+                                {
+                                    $sheet->setCellValue('R' . $sheet->getHighestRow(), $hora);
+                                    $contExtra = 0;
+                                }
                             }
                         }
+   
 
                         //para el primer marcado - primera tardanza
                         $horaEntrada = Carbon::createFromFormat('h:i:s a', $sheet->getCell('I' . $sheet->getHighestRow())->getValue());
