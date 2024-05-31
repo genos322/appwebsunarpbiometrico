@@ -250,27 +250,29 @@ class UsersExports implements FromCollection, WithEvents
                             $sheet->setCellValue('I' . $sheet->getHighestRow(), $hora); // solo hora
                             $lastDate = $date->format('d');
                             $indice[] = $sheet->getHighestRow();
+
+                            $almuerzoInicio = null;
+                            $almuerzoFin = null;
+                            $extraInicio = null;
+                            $extraFin = null;
                         } else {
                             if ($date->hour >= 12 && $date->hour <= 16) {
-                                if ($contAlmuerzo == 0) {
+                                if (is_null($almuerzoInicio)) {
                                     $sheet->setCellValue('K' . $sheet->getHighestRow(), $hora);
-                                    $contAlmuerzo++;
-                                } elseif ($contAlmuerzo == 1) {
+                                    $almuerzoInicio = $hora;
+                                } elseif (is_null($almuerzoFin)) {
                                     $sheet->setCellValue('L' . $sheet->getHighestRow(), $hora);
-                                    $contAlmuerzo = 0; // Reiniciar el contador después de la segunda marca
+                                    $almuerzoFin = $hora;
                                 }
                             } elseif ($date->hour >= 17) {
                                 $sheet->setCellValue('N' . $sheet->getHighestRow(), $hora);
-                            }else {
-                                if($contExtra == 0)
-                                {
+                            } else {
+                                if (is_null($extraInicio)) {
                                     $sheet->setCellValue('Q' . $sheet->getHighestRow(), $hora);
-                                    $contExtra++;
-                                }
-                                elseif($contExtra == 1)
-                                {
+                                    $extraInicio = $hora;
+                                } elseif (is_null($extraFin)) {
                                     $sheet->setCellValue('R' . $sheet->getHighestRow(), $hora);
-                                    $contExtra = 0;
+                                    $extraFin = $hora;
                                 }
                             }
                         }
