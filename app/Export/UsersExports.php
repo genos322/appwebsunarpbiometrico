@@ -43,6 +43,7 @@ class UsersExports implements FromCollection, WithEvents
                 $sheet->setCellValue('A1', 'REPORTE DE ASISTENCIA DE LA ZONA REGISTRAL Nº XIV - SEDE AYACUCHO');
                 $sheet->setCellValue('A2', 'Tipo de contrato');
                 $cont = 0;
+                $contAlmuerzo = 0;
                 $hora = 17;
                 $minutos = 0;
                 $column = 'H';
@@ -233,10 +234,9 @@ class UsersExports implements FromCollection, WithEvents
                             if (isset($fullName[4])) {
                                 $nombres = $nombres . ' ' . $fullName[4];
                             }
-                        }
-                
+                        }                
                         // Comenzar nueva fila si es un nuevo día
-                        if ($count == 0 || $lastDate != $date->format('d')) {
+                        if (($date->hour >= 7 && $date->hour <= 9)) {
                             $sheet->setCellValue('A' . ($sheet->getHighestRow() + 1), $rowData[2]);
                             $sheet->setCellValue('B' . ($sheet->getHighestRow()), $apellidoPaterno);
                             $sheet->setCellValue('C' . $sheet->getHighestRow(), $apellidoMaterno);
@@ -247,21 +247,21 @@ class UsersExports implements FromCollection, WithEvents
                             $sheet->setCellValue('H' . $sheet->getHighestRow(), $fecha); // solo fecha día mes año
                             $sheet->setCellValue('I' . $sheet->getHighestRow(), $hora); // solo hora
                             $lastDate = $date->format('d');
-                            $count = 1; // Reiniciar el contador para el nuevo día
                             $indice[] = $sheet->getHighestRow();
                         } else {
-                            if ($count == 1) {
-                                $sheet->setCellValue('K' . $sheet->getHighestRow(), $hora);
-                            }
-                            if ($count == 2) {
-                                $sheet->setCellValue('L' . $sheet->getHighestRow(), $hora);
-                            }
-                            if ($count == 3) {
+                            if ($date->hour >= 12 && $date->hour <= 15) {
+                                if ($contAlmuerzo == 0) {
+                                    $sheet->setCellValue('K' . $sheet->getHighestRow(), $hora);
+                                    $contAlmuerzo++;
+                                } elseif ($contAlmuerzo == 1) {
+                                    $sheet->setCellValue('L' . $sheet->getHighestRow(), $hora);
+                                    $contAlmuerzo = 0; // Reiniciar el contador después de la segunda marca
+                                }
+                            } elseif ($date->hour >= 17) {
                                 $sheet->setCellValue('N' . $sheet->getHighestRow(), $hora);
-                                $count = 0; // Reiniciar el contador para el próximo registro de entrada
                             }
-                            $count++;
                         }
+
                         //para el primer marcado - primera tardanza
                         $horaEntrada = Carbon::createFromFormat('h:i:s a', $sheet->getCell('I' . $sheet->getHighestRow())->getValue());
                         $horaLimite = Carbon::createFromTime(8, 0, 0);
@@ -318,28 +318,6 @@ class UsersExports implements FromCollection, WithEvents
                             $allDni[] = $rowData[2];
                             $sumsByDNI[$dni] = Carbon::createFromFormat('H:i:s', $sumTimeString);
                         }
-                        // if($lastDate2 != $date->format('d'))
-                        // {
-                        //     $sumaTotal = $sumsByDNI[$dni]->addHours($lastData->hour)
-                        //                                 ->addMinutes($lastData->minute)
-                        //                                 ->addSeconds($lastData->second);
-                        //     $sumsByDNI[$dni] = $sumaTotal;
-                        //     $lastDate2 = $date->format('d');
-                        // }
-                        // else{
-                        //     $lastData = Carbon::createFromFormat('H:i:s', $sumTimeString);
-                        // }
-                        // if($lastDni == $dni && $count == 3)
-                        // {
-                        //     $sumaTotal = $sumsByDNI[$dni]->addHours($lastData->hour)
-                        //     ->addMinutes($lastData->minute)
-                        //     ->addSeconds($lastData->second);
-                        //     $sumsByDNI[$dni] = $sumaTotal;
-                        // }
-                        // else
-                        // {
-                        //     $lastDni = $dni;
-                        // }
                         // Estética
                         $sheet->autoSize(true);
                     }
