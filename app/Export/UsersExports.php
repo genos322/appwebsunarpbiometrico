@@ -204,7 +204,7 @@ class UsersExports implements FromCollection, WithEvents
                 $totalDays = $monthDays->daysInMonth;
                 $feriados = [];
                 $count=0;
-                $lastDate = 1;//fecha para el tema de los 4 marcados
+                $lastDate = 0;//fecha para el tema de los 4 marcados
                 $lastDate2 = 1;
                 $allDni = [];
                 $lastDni = $this->data[1][2];
@@ -213,6 +213,10 @@ class UsersExports implements FromCollection, WithEvents
                 $indice = [];
                 $flag = 0;
                 $sumaTotal = Carbon::createFromTime(0, 0, 0);
+                $almuerzoInicio = null;
+                $almuerzoFin = null;
+                $extraInicio = null;
+                $extraFin = null;
                 foreach (range(1, $totalDays) as $day) {
                     $currentDate = Carbon::createFromDate($firstData->year, $firstData->month, $day);
                     $dayName = $currentDate->format('l'); // Obtener el nombre del día en inglés                
@@ -238,7 +242,7 @@ class UsersExports implements FromCollection, WithEvents
                             }
                         }                
                         // Comenzar nueva fila si es un nuevo día
-                        if (($date->hour >= 7 && $date->hour <= 9)) {
+                        if ($date->hour >= 7 && $date->hour <= 9 && $lastDate != $date-> format('d')) {
                             $sheet->setCellValue('A' . ($sheet->getHighestRow() + 1), $rowData[2]);
                             $sheet->setCellValue('B' . ($sheet->getHighestRow()), $apellidoPaterno);
                             $sheet->setCellValue('C' . $sheet->getHighestRow(), $apellidoMaterno);
@@ -334,7 +338,12 @@ class UsersExports implements FromCollection, WithEvents
                             $allDni[] = $rowData[2];
                             $sumsByDNI[$dni] = Carbon::createFromFormat('H:i:s', $sumTimeString);
                         }
+                        if($lastDate != $date->format('d'))
+                        {
+                            $lastDate = $date->format('d');
+                        }
                         // Estética
+
                         $sheet->autoSize(true);
                     }
                 }
