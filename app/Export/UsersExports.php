@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Config;
 
 class UsersExports implements FromCollection, WithEvents
 {
@@ -217,6 +218,8 @@ class UsersExports implements FromCollection, WithEvents
                 $almuerzoFin = null;
                 $extraInicio = null;
                 $extraFin = null;
+                $dniList9 = Config::get('app.dni_list_horario_9');
+                $dniListJefe = Config::get('app.dni_list_jefe');
                 foreach (range(1, $totalDays) as $day) {
                     $currentDate = Carbon::createFromDate($firstData->year, $firstData->month, $day);
                     $dayName = $currentDate->format('l'); // Obtener el nombre del día en inglés                
@@ -242,7 +245,7 @@ class UsersExports implements FromCollection, WithEvents
                             }
                         }                
                         // Comenzar nueva fila si es un nuevo día
-                        if ($date->hour >= 7 && $date->hour <= 9 && $lastDate != $date-> format('d')) {
+                        if ($lastDate != $date-> format('d')) {
                             $sheet->setCellValue('A' . ($sheet->getHighestRow() + 1), $rowData[2]);
                             $sheet->setCellValue('B' . ($sheet->getHighestRow()), $apellidoPaterno);
                             $sheet->setCellValue('C' . $sheet->getHighestRow(), $apellidoMaterno);
@@ -280,40 +283,58 @@ class UsersExports implements FromCollection, WithEvents
                                 }
                             }
                         }
-   
 
-                        //para el primer marcado - primera tardanza
-                        $horaEntrada = Carbon::createFromFormat('h:i:s a', $sheet->getCell('I' . $sheet->getHighestRow())->getValue());
+                        //para el primer marcado - primera tardanza--a su vez verifica que si la primera asistencia está fuera del rango y quede vacía se completará con 00
+                        $hEntrada = !empty($sheet->getCell('I' . $sheet->getHighestRow())->getValue()) ? $sheet->getCell('I' . $sheet->getHighestRow())->getValue() : '00:00:00';
+                        // return dd($hEntrada);
+                        $horaEntrada = Carbon::createFromFormat('h:i:s a', $hEntrada);
                         $horaLimite = Carbon::createFromTime(8, 0, 0);
-                        if ($horaEntrada->lessThanOrEqualTo($horaLimite)) {
-                            $sheet->setCellValue('J' . $sheet->getHighestRow(), 0); // 1° tardanza
-                        } else {
-                            $tardanza = $horaEntrada->diff($horaLimite)->format('%H:%I:%S');
-                            $sheet->setCellValue('J' . $sheet->getHighestRow(), $tardanza); // 1° tardanza
+                        $horaLimite2 = Carbon::createFromTime(9, 0, 0);
+                        if(!in_array($dni,$dniList9) && !in_array($dni,$dniListJefe))//para todos lo trabajadores ordinarios
+                        {
+                            if ($horaEntrada->lessThanOrEqualTo($horaLimite)) {
+                                $sheet->setCellValue('J' . $sheet->getHighestRow(), 0); // Se coloca 0 en caso de que no haya tardanza
+                            } else {
+                                $tardanza = $horaEntrada->diff($horaLimite)->format('%H:%I:%S');
+                                $sheet->setCellValue('J' . $sheet->getHighestRow(), $tardanza); // 1° tardanza
+                            }
+                        }
+                        else{
+                            $sheet->setCellValue('J' . $sheet->getHighestRow(), 0); // Para el caso d eque sea jefe
+                        }
+                        if(in_array($dni,$dniList9)){//para todos lo trabjadores que tengan una entrada de las 9
+                            if ($horaEntrada->lessThanOrEqualTo($horaLimite2)) {
+                                $sheet->setCellValue('J' . $sheet->getHighestRow(), 0); // Se coloca 0 en caso de que no haya tardanza
+                            } else {
+                                $tardanza = $horaEntrada->diff($horaLimite2)->format('%H:%I:%S');
+                                $sheet->setCellValue('J' . $sheet->getHighestRow(), $tardanza); // 1° tardanza
+                            }
                         }
                         //para el segundo marcado - segunda tardanza
-                        $horaFinManana = $sheet->getCell('K' . $sheet->getHighestRow())->getValue();
-                        $horaInicioTarde = $sheet->getCell('L' . $sheet->getHighestRow())->getValue();
-                
-                        if ($horaFinManana && $horaInicioTarde) {
-                            $horaFinMananaCarbon = Carbon::createFromFormat('h:i:s a', $horaFinManana);
-                            $horaInicioTardeCarbon = Carbon::createFromFormat('h:i:s a', $horaInicioTarde);
-                            $diferencia = $horaFinMananaCarbon->diffInSeconds($horaInicioTardeCarbon);
-                            
-                            // Si la diferencia es mayor a una hora (3600 segundos), restar una hora
-                            if ($diferencia > 3600) {
-                                $excesoTiempo = gmdate('H:i:s', $diferencia - 3600); // Resta 3600 segundos (1 hora)
-                                $sheet->setCellValue('M' . $sheet->getHighestRow(), $excesoTiempo); // Exceso de tiempo
+                        if(!in_array($dni,$dniListJefe))//tardanza de almuerzo no se aplica a jefes
+                        {
+                            $horaFinManana = $sheet->getCell('K' . $sheet->getHighestRow())->getValue();
+                            $horaInicioTarde = $sheet->getCell('L' . $sheet->getHighestRow())->getValue();
+                    
+                            if ($horaFinManana && $horaInicioTarde) {
+                                $horaFinMananaCarbon = Carbon::createFromFormat('h:i:s a', $horaFinManana);
+                                $horaInicioTardeCarbon = Carbon::createFromFormat('h:i:s a', $horaInicioTarde);
+                                $diferencia = $horaFinMananaCarbon->diffInSeconds($horaInicioTardeCarbon);
+                                
+                                // Si la diferencia es mayor a una hora (3600 segundos), restar una hora
+                                if ($diferencia > 3600) {
+                                    $excesoTiempo = gmdate('H:i:s', $diferencia - 3600); // Resta 3600 segundos (1 hora)
+                                    $sheet->setCellValue('M' . $sheet->getHighestRow(), $excesoTiempo); // Exceso de tiempo
+                                } else {
+                                    $sheet->setCellValue('M' . $sheet->getHighestRow(), ''); // No hay exceso de tiempo
+                                }
                             } else {
                                 $sheet->setCellValue('M' . $sheet->getHighestRow(), ''); // No hay exceso de tiempo
                             }
-                        } else {
-                            $sheet->setCellValue('M' . $sheet->getHighestRow(), ''); // No hay exceso de tiempo
+                            //sumar el total de tardanza diaria
+                            $cellValue1 = $sheet->getCell('J'.$sheet->getHighestRow())->getValue();
+                            $cellValue2 = $sheet->getCell('M'.$sheet->getHighestRow())->getValue();
                         }
-                        //sumar el total de tardanza diaria
-                        $cellValue1 = $sheet->getCell('J'.$sheet->getHighestRow())->getValue();
-                        $cellValue2 = $sheet->getCell('M'.$sheet->getHighestRow())->getValue();
-
                         // Verifica si las celdas están vacías, si es así, establece el valor en '00:00:00'
                         $cellValue1 = (!empty($cellValue1)) ? $cellValue1 : '00:00:00';
                         $cellValue2 = (!empty($cellValue2)) ? $cellValue2 : '00:00:00';

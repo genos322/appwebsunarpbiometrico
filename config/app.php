@@ -128,5 +128,24 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+    'dni_list_horario_9' => [
+        '70772266',//pavel melgar
+        '40275739',//maritza
+        '44508292',//alessandra
+        '46370388',//IBET MOREYRA
+        '43110266',//ivan
+
+        // Añade más DNIs aquí
+    ],
+    'dni_list_jefe' => [
+        '9555767',//remigio rojas
+        '22185728',//juan carlos hernandez
+        '41346060',//miguel angel
+        '40059729',//postilla miguel
+        '43514144',//max sanchez
+        '46469718',//cárdenas johan  
+        '45278683',//jimenez paul      
+        // Añade más DNIs aquí
+    ],
 
 ];
