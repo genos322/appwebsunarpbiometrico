@@ -32,8 +32,20 @@
                             <span class="button_text">Descargar excel</span>
                         </span>
                     </button>
-                </div>   
+                </div>
             </section>
+            <div class="mt-36 flex flex-row gap-8">
+                <textarea readonly name="" id="" cols="30" rows="5" class="rounded-lg p-12 resize-none min-w[40px] width[250px]">
+                    @foreach ($dniHorario9 as $item)
+                    {{$item}}
+                    @endforeach
+                </textarea>
+                <textarea readonly name="" id="" cols="30" rows="5" class="rounded-lg p-12 resize min-w[40px] width[250px]">
+                    @foreach ($dniHorario9 as $item)
+                    {{$item}}
+                    @endforeach
+                </textarea>
+            </div>
         </div>
     </main>
 </body>
