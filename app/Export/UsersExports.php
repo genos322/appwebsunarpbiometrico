@@ -352,34 +352,38 @@ class UsersExports implements FromCollection, WithEvents
                             //sumar el total de tardanza diaria
                             $cellValue1 = $sheet->getCell('J'.$sheet->getHighestRow())->getValue();
                             $cellValue2 = $sheet->getCell('M'.$sheet->getHighestRow())->getValue();
+                        
+                            // Verifica si las celdas están vacías, si es así, establece el valor en '00:00:00'
+                            $cellValue1 = (!empty($cellValue1)) ? $cellValue1 : '00:00:00';
+                            $cellValue2 = (!empty($cellValue2)) ? $cellValue2 : '00:00:00';
+
+                            // Convierte los valores de las celdas a objetos Carbon
+                            $time1 = Carbon::createFromFormat('H:i:s', $cellValue1);
+                            $time2 = Carbon::createFromFormat('H:i:s', $cellValue2);
+
+                            // Suma los tiempos
+                            $sumTime = $time1->addHours($time2->hour)
+                                            ->addMinutes($time2->minute)
+                                            ->addSeconds($time2->second);
+
+                            // Formatea el tiempo sumado de vuelta a una cadena
+                            $sumTimeString = $sumTime->format('H:i:s');
+                            
+                            // Establece el valor de la celda sumada
+                            $sheet->setCellValue('O'.$sheet->getHighestRow(), $sumTimeString);
+                            //suma total de tardanza acumulada, vaildando si mantiene el dni
+                            if(!in_array($dni, $allDni))
+                            {
+                                $allDni[] = $rowData[2];
+                                $sumsByDNI[$dni] = Carbon::createFromFormat('H:i:s', $sumTimeString);
+                            }
+                            if($lastDate != $date->format('d'))
+                            {
+                                $lastDate = $date->format('d');
+                            }
                         }
-                        // Verifica si las celdas están vacías, si es así, establece el valor en '00:00:00'
-                        $cellValue1 = (!empty($cellValue1)) ? $cellValue1 : '00:00:00';
-                        $cellValue2 = (!empty($cellValue2)) ? $cellValue2 : '00:00:00';
-
-                        // Convierte los valores de las celdas a objetos Carbon
-                        $time1 = Carbon::createFromFormat('H:i:s', $cellValue1);
-                        $time2 = Carbon::createFromFormat('H:i:s', $cellValue2);
-
-                        // Suma los tiempos
-                        $sumTime = $time1->addHours($time2->hour)
-                                        ->addMinutes($time2->minute)
-                                        ->addSeconds($time2->second);
-
-                        // Formatea el tiempo sumado de vuelta a una cadena
-                        $sumTimeString = $sumTime->format('H:i:s');
-
-                        // Establece el valor de la celda sumada
-                        $sheet->setCellValue('O'.$sheet->getHighestRow(), $sumTimeString);
-                        //suma total de tardanza acumulada, vaildando si mantiene el dni
-                        if(!in_array($dni, $allDni))
-                        {
-                            $allDni[] = $rowData[2];
-                            $sumsByDNI[$dni] = Carbon::createFromFormat('H:i:s', $sumTimeString);
-                        }
-                        if($lastDate != $date->format('d'))
-                        {
-                            $lastDate = $date->format('d');
+                        else{
+                            $sheet->setCellValue('O' . $sheet->getHighestRow(), ''); // No hay exceso de tiempo por ser jefe
                         }
                         // Estética
 
@@ -388,9 +392,10 @@ class UsersExports implements FromCollection, WithEvents
                 }
                 //sumar el total de tardanza acumulada
                 foreach($indice as $key => $data)
-                {
+                {   
+                     //para el segundo marcado - segunda tardanza
                     $datos = $sheet->getCell('O'.$data)->getValue();
-                    $sum = Carbon::createFromFormat('H:i:s', $datos);
+                    $sum = Carbon::createFromFormat('H:i:s', !empty($datos) ? $datos : '00:00:00');
                     if($sheet->getCell('A'.$data)->getValue() == $sheet->getCell('A'.($data+1))->getValue())
                     {
                         if($sumaTotal->hour == 0 && $sumaTotal->minute == 0 && $sumaTotal->second == 0 && $flag == 0)
