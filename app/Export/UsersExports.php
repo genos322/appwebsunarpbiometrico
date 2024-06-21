@@ -218,15 +218,25 @@ class UsersExports implements FromCollection, WithEvents
                 $almuerzoFin = null;
                 $extraInicio = null;
                 $extraFin = null;
-                $dni9 = Config::get('app.dni_list_horario_9');
-                $dniList9 = array_map(function($item) {//obtneindo solo el dni
-                    return explode('-', $item)[0];
-                }, $dni9);
+                $jsonContent = file_get_contents(storage_path('data/config.json'));
+                $data = json_decode($jsonContent, true);
+                $dniListJefe = [];
+                $dniList9 = [];
+                foreach ($data['dni_list'] as $key => $value) {
+                    if($value['rol'] == 'jefe')
+                    {
+                        $dniListJefe[] = $value['dni'];
+                    }
+                    else
+                    {
+                        $dniList9[] = $value['dni'];
+                    }
+                }
 
-                $dniJefe = Config::get('app.dni_list_jefe');
-                $dniListJefe = array_map(function($item) {
-                    return explode('-', $item)[0];
-                }, $dniJefe);
+                // $dniJefe = Config::get('app.dni_list_jefe');
+                // $dniListJefe = array_map(function($item) {
+                //     return explode('-', $item)[0];
+                // }, $dniJefe);
 
                 foreach (range(1, $totalDays) as $day) {
                     $currentDate = Carbon::createFromDate($firstData->year, $firstData->month, $day);

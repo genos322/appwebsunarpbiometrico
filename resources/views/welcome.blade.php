@@ -42,15 +42,26 @@
                     <table id="horario9" class="bg-white display rounded-md">
                         <thead class="text-black">
                             <tr>
-                                <th>Nombre</th>
                                 <th>DNI</th>
+                                <th>Nombre</th>
+                                <th>ACCIONES</th>
                             </tr>
                         </thead>
                         <tbody class="text-black">
-                            @foreach ($dni9 as $item)
+                            @foreach ($data['dni_list'] as $item)
                             <tr>
-                                <td>{{$item->nombre}}</td>
-                                <td>{{$item->dni}}</td>
+                                <td contenteditable="true">{{$item['dni']}}</td>
+                                <td contenteditable="true">{{$item['nombre']}}</td>
+                                <td class="flex flex-row justify-around gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" width="20" height="20">
+                                    <g>
+                                        <path d="M490.667,234.667H448V192c0-11.782-9.551-21.333-21.333-21.333c-11.782,0-21.333,9.551-21.333,21.333v42.667h-42.667   c-11.782,0-21.333,9.551-21.333,21.333c0,11.782,9.551,21.333,21.333,21.333h42.667V320c0,11.782,9.551,21.333,21.333,21.333   c11.782,0,21.333-9.551,21.333-21.333v-42.667h42.667c11.782,0,21.333-9.551,21.333-21.333   C512,244.218,502.449,234.667,490.667,234.667z"/>
+                                        <circle cx="192" cy="128" r="128"/>
+                                        <path d="M192,298.667c-105.99,0.118-191.882,86.01-192,192C0,502.449,9.551,512,21.333,512h341.333   c11.782,0,21.333-9.551,21.333-21.333C383.882,384.677,297.99,298.784,192,298.667z"/>
+                                    </g>
+                                    </svg>
+                                    <svg id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -58,15 +69,26 @@
                     <table id="horarioJ" class="display bg-white rounded-md">
                         <thead class="text-black">
                             <tr>
-                                <th>Nombre</th>
                                 <th>DNI</th>
+                                <th>Nombre</th>
+                                <th>ACCIONES</th>
                             </tr>
                         </thead>
                         <tbody class="text-black">
-                            @foreach ($dniJ as $item)
+                            @foreach ($data['dni_list'] as $item)
                             <tr>
-                                <td>{{$item->nombre}}</td>
-                                <td>{{$item->dni}}</td>
+                                <td>{{$item['dni']}}</td>
+                                <td>{{$item['nombre']}}</td>
+                                <td class="flex flex-row justify-around gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" width="20" height="20">
+                                    <g>
+                                        <path d="M490.667,234.667H448V192c0-11.782-9.551-21.333-21.333-21.333c-11.782,0-21.333,9.551-21.333,21.333v42.667h-42.667   c-11.782,0-21.333,9.551-21.333,21.333c0,11.782,9.551,21.333,21.333,21.333h42.667V320c0,11.782,9.551,21.333,21.333,21.333   c11.782,0,21.333-9.551,21.333-21.333v-42.667h42.667c11.782,0,21.333-9.551,21.333-21.333   C512,244.218,502.449,234.667,490.667,234.667z"/>
+                                        <circle cx="192" cy="128" r="128"/>
+                                        <path d="M192,298.667c-105.99,0.118-191.882,86.01-192,192C0,502.449,9.551,512,21.333,512h341.333   c11.782,0,21.333-9.551,21.333-21.333C383.882,384.677,297.99,298.784,192,298.667z"/>
+                                    </g>
+                                    </svg>
+                                    <svg id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>

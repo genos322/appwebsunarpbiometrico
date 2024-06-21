@@ -1,0 +1,64 @@
+{
+    "dni_list": [
+        {
+            "dni": "70772266",
+            "nombre": "PALOMINO MELGAR CRISTHIAN",
+            "rol":"horario9"
+        },
+        {
+            "dni": "40275739",
+            "nombre": "MORRIBERON BEINGOLEA MAR",
+            "rol":"horario9"
+        },
+        {
+            "dni": "44508292",
+            "nombre": "ZAGA VILA ALESSANDRA DIA",
+            "rol":"horario9"
+        },
+        {
+            "dni": "46370388",
+            "nombre": "MOREYRA ROMANÍ IBET MARG",
+            "rol":"horario9"
+        },
+        {
+            "dni": "43110266",
+            "nombre": "FLORES CALDERÓN IVAN",
+            "rol":"horario9"
+        },
+        {
+            "dni": "9555767",
+            "nombre": "ROJAS ESPINOZA REMIGIO A",
+            "rol": "jefe"
+        },
+        {
+            "dni": "22185728",
+            "nombre": "HERNANDEZ CONTRERAS JUAN",
+            "rol": "jefe"
+        },
+        {
+            "dni": "41346060",
+            "nombre": "HUAMAN YANARICO MIGUEL A",
+            "rol": "jefe"
+        },
+        {
+            "dni": "40059729",
+            "nombre": "PORTILLA SANTA CRUZ JIMM",
+            "rol": "jefe"
+        },
+        {
+            "dni": "43514144",
+            "nombre": "SÁNCHEZ YANGALI MAX ANTO",
+            "rol": "jefe"
+        },
+        {
+            "dni": "46469718",
+            "nombre": "CÁRDENAS MENDOZA JHOAN S",
+            "rol": "jefe"
+        },
+        {
+            "dni": "45278683",
+            "nombre": "JIMÉNEZ CÁRDENAS PAUL JH",
+            "rol": "jefe"
+        }
+    ]
+}
