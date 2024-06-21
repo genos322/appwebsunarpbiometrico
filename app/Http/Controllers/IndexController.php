@@ -11,6 +11,21 @@ class IndexController extends Controller
     {
         $dniHorario9 = Config::get('app.dni_list_horario_9');
         $dniJefe = Config::get('app.dni_list_jefe');
-        return view('welcome', compact('dniHorario9', 'dniJefe'));
+        $dni9 = array_map(function($item) {
+            list($dni, $nombre) = explode('-', $item, 2);
+            return (object) [
+                'dni' => $dni,
+                'nombre' => $nombre
+            ];
+        }, $dniHorario9);
+        //jefe
+        $dniJ = array_map(function($item) {
+            list($dni, $nombre) = explode('-', $item, 2);
+            return (object) [
+                'dni' => $dni,
+                'nombre' => $nombre
+            ];
+        }, $dniJefe);
+        return view('welcome', compact('dni9', 'dniJ'));
     }
 }

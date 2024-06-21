@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     @vite('resources/css/app.css')
+    <link rel="stylesheet" href="{{asset('plugins/datatables/datatables.min.css')}}">
 </head>
 <body class="fondo bg-cover">
     <main>
@@ -34,20 +35,61 @@
                     </button>
                 </div>
             </section>
-            <div class="mt-20 flex flex-row justify-around items-center gap-8 backdrop-invert-[20%] w-[1200px] h-[300px]">
-                <textarea readonly name="" id="" cols="30" rows="5" class="rounded-lg p-12 resize-none min-w[40px] w-[350px] h-[200px] ">
-                    @foreach ($dniHorario9 as $item)
-                    {{$item}}
-                    @endforeach
-                </textarea>
-                <textarea readonly name="" id="" cols="30" rows="5" class="rounded-lg p-12 resize min-w[40px] w-[350px] h-[200px] ">
-                    @foreach ($dniHorario9 as $item)
-                    {{$item}}
-                    @endforeach
-                </textarea>
+            <div class="mt-10 pt-6 flex flex-wrap justify-around items-start item backdrop-invert-[35%] backdrop-blur-md w-[1200px] h-[600px] rounded-lg">
+                <h1 class="w-1/2 text-center text-white text-3xl font-bold font-mono">PERSONAL ENTRADA 9</h1>
+                <h1 class="w-1/2 text-center text-white text-3xl font-bold font-mono">JEFES</h1>
+                <div class="w-full text-white flex flex-row flex-wrap justify-around items-start gap-8 -mt-16">
+                    <table id="horario9" class="bg-white display rounded-md">
+                        <thead class="text-black">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>DNI</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-black">
+                            @foreach ($dni9 as $item)
+                            <tr>
+                                <td>{{$item->nombre}}</td>
+                                <td>{{$item->dni}}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <table id="horarioJ" class="display bg-white rounded-md">
+                        <thead class="text-black">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>DNI</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-black">
+                            @foreach ($dniJ as $item)
+                            <tr>
+                                <td>{{$item->nombre}}</td>
+                                <td>{{$item->dni}}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
             </div>
         </div>
     </main>
 </body>
 </html>
+<script src="{{asset('plugins/jquery.min.js')}}"></script>
 <script src="{{asset('../resources/js/app.js')}}"></script>
+<script src="{{asset('plugins/datatables/datatables.min.js')}}"></script>
+<script>
+    let table = new DataTable('#horario9',{
+        info:false,
+        language: {
+        url: '{{asset('plugins/datatables/language.json')}}',
+    },
+    });
+    let table2 = new DataTable('#horarioJ',{
+        info:false,
+        language: {
+        url: '{{asset('plugins/datatables/language.json')}}',
+    },
+    });
+</script>
