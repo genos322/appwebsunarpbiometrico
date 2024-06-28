@@ -7,6 +7,10 @@
     <title>Document</title>
     @vite('resources/css/app.css')
     <link rel="stylesheet" href="{{asset('plugins/datatables/datatables.min.css')}}">
+    <link rel="stylesheet" href="{{asset('plugins/tooltip/hint.css')}}">
+    <link rel="stylesheet" href="{{asset('plugins/notify/toastify.min.css')}}">
+    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body class="fondo bg-cover">
     <main>
@@ -35,11 +39,11 @@
                     </button>
                 </div>
             </section>
-            <div class="mt-10 pt-6 flex flex-wrap justify-around items-start item backdrop-invert-[35%] backdrop-blur-md w-[1200px] h-[600px] rounded-lg">
+            <div class="mt-10 pt-6 flex flex-wrap justify-around items-start item backdrop-invert-[35%] backdrop-blur-md w-[1200px] h-[720px] rounded-lg">
                 <h1 class="w-1/2 text-center text-white text-3xl font-bold font-mono">PERSONAL ENTRADA 9</h1>
                 <h1 class="w-1/2 text-center text-white text-3xl font-bold font-mono">JEFES</h1>
-                <div class="w-full text-white flex flex-row flex-wrap justify-around items-start gap-8 -mt-16">
-                    <table id="horario9" class="bg-white display rounded-md">
+                <div class="w-full text-white flex flex-row flex-wrap justify-around items-start gap-8">
+                    <table id="horario9" class="bg-white display rounded-md min-h-[380px] max-h-[380px]">
                         <thead class="text-black">
                             <tr>
                                 <th>DNI</th>
@@ -49,24 +53,25 @@
                         </thead>
                         <tbody class="text-black">
                             @foreach ($data['dni_list'] as $item)
-                            <tr>
-                                <td contenteditable="true">{{$item['dni']}}</td>
-                                <td contenteditable="true">{{$item['nombre']}}</td>
-                                <td class="flex flex-row justify-around gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" width="20" height="20">
-                                    <g>
-                                        <path d="M490.667,234.667H448V192c0-11.782-9.551-21.333-21.333-21.333c-11.782,0-21.333,9.551-21.333,21.333v42.667h-42.667   c-11.782,0-21.333,9.551-21.333,21.333c0,11.782,9.551,21.333,21.333,21.333h42.667V320c0,11.782,9.551,21.333,21.333,21.333   c11.782,0,21.333-9.551,21.333-21.333v-42.667h42.667c11.782,0,21.333-9.551,21.333-21.333   C512,244.218,502.449,234.667,490.667,234.667z"/>
-                                        <circle cx="192" cy="128" r="128"/>
-                                        <path d="M192,298.667c-105.99,0.118-191.882,86.01-192,192C0,502.449,9.551,512,21.333,512h341.333   c11.782,0,21.333-9.551,21.333-21.333C383.882,384.677,297.99,298.784,192,298.667z"/>
-                                    </g>
-                                    </svg>
-                                    <svg id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg>
-                                </td>
-                            </tr>
+                                @if($item['rol'] == 'horario9')
+                                <tr>
+                                    <td id="{{$item['id'].'+dni'}}" contenteditable="true" >{{$item['dni']}}</td>
+                                    <td id="{{$item['id'].'+name'}}" contenteditable="true">{{$item['nombre']}}</td>
+                                    <td class="flex flex-row justify-around gap-2">
+                                        <span class="hint--bottom" aria-label="ELMINAR">                                        <svg id="Layer_1" class="cursor-pointer" title="elminiar Usuario" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
+                                        <i class="cursor-pointer invisible hint--bottom" aria-label="Guardar" id="{{$item['id'].'+save'}}">✔</i>
+                                    </td>
+                                </tr>
+                                @endif
                             @endforeach
                         </tbody>
+                        <tfoot class="bg-black">
+                            <tr>
+                                <td colspan="3" class="!text-center"  title="Añadir Usuario"><i id="idAddUser" class=" cursor-pointer hint--top" aria-label="Añadir Usuario"s>➕</i></td>
+                            </tr>
+                        </tfoot>
                     </table>
-                    <table id="horarioJ" class="display bg-white rounded-md">
+                    <table id="horarioJ" class="display bg-white rounded-md min-h-[380px]">
                         <thead class="text-black">
                             <tr>
                                 <th>DNI</th>
@@ -76,22 +81,23 @@
                         </thead>
                         <tbody class="text-black">
                             @foreach ($data['dni_list'] as $item)
-                            <tr>
-                                <td>{{$item['dni']}}</td>
-                                <td>{{$item['nombre']}}</td>
-                                <td class="flex flex-row justify-around gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" width="20" height="20">
-                                    <g>
-                                        <path d="M490.667,234.667H448V192c0-11.782-9.551-21.333-21.333-21.333c-11.782,0-21.333,9.551-21.333,21.333v42.667h-42.667   c-11.782,0-21.333,9.551-21.333,21.333c0,11.782,9.551,21.333,21.333,21.333h42.667V320c0,11.782,9.551,21.333,21.333,21.333   c11.782,0,21.333-9.551,21.333-21.333v-42.667h42.667c11.782,0,21.333-9.551,21.333-21.333   C512,244.218,502.449,234.667,490.667,234.667z"/>
-                                        <circle cx="192" cy="128" r="128"/>
-                                        <path d="M192,298.667c-105.99,0.118-191.882,86.01-192,192C0,502.449,9.551,512,21.333,512h341.333   c11.782,0,21.333-9.551,21.333-21.333C383.882,384.677,297.99,298.784,192,298.667z"/>
-                                    </g>
-                                    </svg>
-                                    <svg id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg>
-                                </td>
-                            </tr>
+                                @if($item['rol'] == 'jefe')
+                                <tr>
+                                    <td id="{{$item['id'].'+dni'}}" contenteditable="true">{{$item['dni']}}</td>
+                                    <td id="{{$item['id'].'+name'}}" contenteditable="true">{{$item['nombre']}}</td>
+                                    <td class="flex flex-row justify-around gap-2">
+                                        <span class="hint--bottom" aria-label="ELMINAR"><svg class="cursor-pointer" aria-label="Thank you!"  id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
+                                        <i class="cursor-pointer invisible hint--bottom" aria-label="Guardar" id="{{$item['id'].'+save'}}">✔</i>
+                                    </td>
+                                </tr>
+                                @endif
                             @endforeach
                         </tbody>
+                        <tfoot class="bg-black">
+                            <tr>
+                                <td colspan="3" class="!text-center"  title="Añadir Usuario"><i id="idAddUser1" class=" cursor-pointer hint--top" aria-label="Añadir Usuario"s>➕</i></td>
+                            </tr>
+                        </tfoot>
                     </table>
             </div>
         </div>
@@ -99,19 +105,45 @@
 </body>
 </html>
 <script src="{{asset('plugins/jquery.min.js')}}"></script>
-<script src="{{asset('../resources/js/app.js')}}"></script>
 <script src="{{asset('plugins/datatables/datatables.min.js')}}"></script>
+<script src="{{asset('plugins/notify/toastify.min.js')}}"></script>
+<script src="{{asset('../resources/js/app.js')}}"></script>
 <script>
     let table = new DataTable('#horario9',{
         info:false,
+        pageLength: 5,
         language: {
-        url: '{{asset('plugins/datatables/language.json')}}',
-    },
+            url: '{{asset('plugins/datatables/language.json')}}', 
+        },
     });
     let table2 = new DataTable('#horarioJ',{
         info:false,
+        pageLength: 5,
         language: {
-        url: '{{asset('plugins/datatables/language.json')}}',
-    },
+            url: '{{asset('plugins/datatables/language.json')}}',
+        },
     });
+
+    document.getElementById('idAddUser').addEventListener('click', function() {
+                // Añadir una nueva fila a la tabla 'horario9'
+    table.row.add([
+        '<div contenteditable="true">Nuevo Nombre 1</div>',
+        '<div contenteditable="true">nomnbre</div>',
+        `<div class="flex flex-row justify-around gap-2" >
+            <span class="hint--bottom" aria-label="ELMINAR"><svg class="cursor-pointer" aria-label="Thank you!"  id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
+            <i class="cursor-pointer hint--bottom" aria-label="Guardar" id="${uuidv4()}+save" onclick="insert()">✔</i>
+        </div>
+        `
+    ]).draw(false).node();
+            });
+    // Función para generar un UUID v4
+    function uuidv4() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+    function insert()
+    {
+    }
 </script>
