@@ -9,7 +9,7 @@
         {
             "id": 2,
             "dni": "40275739",
-            "nombre": "MORRIBERON BEINGOLEA MAR",
+            "nombre": "MORRIBERON BEINGOLEA MARITZA",
             "rol": "horario9"
         },
         {
@@ -45,7 +45,7 @@
         {
             "id": 8,
             "dni": "41346060",
-            "nombre": "HUAMAN YANARICO MIGUEL A",
+            "nombre": "HUAMAN YANARICO MIGUEL ANGEL",
             "rol": "jefe"
         },
         {
@@ -70,6 +70,36 @@
             "id": 12,
             "dni": "45278683",
             "nombre": "JIMÉNEZ CÁRDENAS PAUL JH",
+            "rol": "jefe"
+        },
+        {
+            "id": "7b03d215-982d-43e6-ae9b-7be07d267c7e",
+            "dni": "75323891",
+            "nombre": "Tomas Angel Rojas Alvarez",
+            "rol": "horario9"
+        },
+        {
+            "id": "aae14632-b215-4c8b-b655-83764464501f",
+            "dni": "TEST",
+            "nombre": "XD",
+            "rol": "horario9"
+        },
+        {
+            "id": 20,
+            "dni": "IDK",
+            "nombre": "eeeeeA",
+            "rol": "horario9"
+        },
+        {
+            "id": "68aed09b-8289-4780-9536-983bb010f9dc",
+            "dni": "Dxdi",
+            "nombre": "ddd",
+            "rol": "jefe"
+        },
+        {
+            "id": "68aed09b-8289-4780-9536-983bb010f9dc",
+            "dni": "aa",
+            "nombre": "aaa",
             "rol": "jefe"
         }
     ]

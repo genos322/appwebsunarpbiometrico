@@ -55,8 +55,8 @@
                             @foreach ($data['dni_list'] as $item)
                                 @if($item['rol'] == 'horario9')
                                 <tr>
-                                    <td id="{{$item['id'].'+dni'}}" contenteditable="true" >{{$item['dni']}}</td>
-                                    <td id="{{$item['id'].'+name'}}" contenteditable="true">{{$item['nombre']}}</td>
+                                    <td id="{{$item['id'].'+dni'}}" contenteditable="true" onkeyup="update('{{$item['id']}}','{{$item['dni']}}','{{$item['nombre']}}','horario9')">{{$item['dni']}}</td>
+                                    <td id="{{$item['id'].'+name'}}" contenteditable="true" onkeyup="update('{{$item['id']}}','{{$item['dni']}}','{{$item['nombre']}}','horario9')">{{$item['nombre']}}</td>
                                     <td class="flex flex-row justify-around gap-2">
                                         <span class="hint--bottom" aria-label="ELMINAR">                                        <svg id="Layer_1" class="cursor-pointer" title="elminiar Usuario" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
                                         <i class="cursor-pointer invisible hint--bottom" aria-label="Guardar" id="{{$item['id'].'+save'}}">✔</i>
@@ -83,8 +83,8 @@
                             @foreach ($data['dni_list'] as $item)
                                 @if($item['rol'] == 'jefe')
                                 <tr>
-                                    <td id="{{$item['id'].'+dni'}}" contenteditable="true">{{$item['dni']}}</td>
-                                    <td id="{{$item['id'].'+name'}}" contenteditable="true">{{$item['nombre']}}</td>
+                                    <td id="{{$item['id'].'+dni'}}" contenteditable="true" onkeyup="update('{{$item['id']}}','{{$item['dni']}}','{{$item['nombre']}}','horario9')">{{$item['dni']}}</td>
+                                    <td id="{{$item['id'].'+name'}}" contenteditable="true" onkeyup="update('{{$item['id']}}','{{$item['dni']}}','{{$item['nombre']}}','horario9')">{{$item['nombre']}}</td>
                                     <td class="flex flex-row justify-around gap-2">
                                         <span class="hint--bottom" aria-label="ELMINAR"><svg class="cursor-pointer" aria-label="Thank you!"  id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
                                         <i class="cursor-pointer invisible hint--bottom" aria-label="Guardar" id="{{$item['id'].'+save'}}">✔</i>
@@ -125,17 +125,34 @@
     });
 
     document.getElementById('idAddUser').addEventListener('click', function() {
-                // Añadir una nueva fila a la tabla 'horario9'
+    // Añadir una nueva fila a la tabla 'horario9'
+    let id = uuidv4();                
     table.row.add([
-        '<div contenteditable="true">Nuevo Nombre 1</div>',
-        '<div contenteditable="true">nomnbre</div>',
+        `<div id="${id}+dni" contenteditable="true">Dni</div>`,
+        `<div id="${id}+name" contenteditable="true">nomnbre</div>`,
         `<div class="flex flex-row justify-around gap-2" >
             <span class="hint--bottom" aria-label="ELMINAR"><svg class="cursor-pointer" aria-label="Thank you!"  id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
-            <i class="cursor-pointer hint--bottom" aria-label="Guardar" id="${uuidv4()}+save" onclick="insert()">✔</i>
+            <i class="cursor-pointer hint--bottom" aria-label="Guardar" onclick="insert('${id}','horario9')">✔</i>
         </div>
         `
     ]).draw(false).node();
             });
+
+    document.getElementById('idAddUser1').addEventListener('click', function() {
+    // Añadir una nueva fila a la tabla jefes
+    let id = uuidv4();                
+
+    table2.row.add([
+        `<div id="${id}+dni" contenteditable="true">Dni</div>`,
+        `<div id="${id}+name" contenteditable="true">nomnbre</div>`,
+        `<div class="flex flex-row justify-around gap-2" >
+            <span class="hint--bottom" aria-label="ELMINAR"><svg class="cursor-pointer" aria-label="Thank you!"  id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
+            <i class="cursor-pointer hint--bottom" aria-label="Guardar" onclick="insert('${id}','jefe')">✔</i>
+        </div>
+        `
+    ]).draw(false).node();
+            });
+   
     // Función para generar un UUID v4
     function uuidv4() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -143,7 +160,119 @@
             return v.toString(16);
         });
     }
-    function insert()
-    {
-    }
+
+    function insert(id, rol) {
+    const dni = document.getElementById(id+'+dni').innerText;
+    const name = document.getElementById(id+'+name').innerText;
+    
+    fetch(window.location+'insert', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+            id: id,
+            dni: dni,
+            name: name,
+            rol: rol
+        })
+    })
+    .then(response => response.json())  // Parsea la respuesta como JSON
+    .then(data => {
+        console.log(data);  // Ahora esto mostrará el objeto parseado
+        Toastify({
+            text: data.message,  // Usa data.message en lugar de response['message']
+            duration: 2000,
+            newWindow: true,
+            gravity: "top",
+            position: "left",
+            stopOnFocus: true,
+            style: {
+                background: "linear-gradient(to right, #00b09b, #96c93d)",
+            },
+            onClick: function(){}
+        }).showToast();
+    })
+    .catch(error => {
+        console.log('Error:', error);
+        Toastify({
+            text: "Error en la operación",
+            duration: 2000,
+            newWindow: true,
+            gravity: "top",
+            position: "left",
+            stopOnFocus: true,
+            style: {
+                background: "linear-gradient(to right, #ff6b6b, #ff9ff3)",
+            },
+            onClick: function(){}
+        }).showToast();
+    });
+}
+
+let debounceTimer;
+const listenerMap = new Map();
+
+function update(id, dni, nombre) {
+    clearTimeout(debounceTimer);
+
+    debounceTimer = setTimeout(() => {
+        const oldDni = dni;
+        const oldName = nombre;
+
+        const icon = document.getElementById(id + '+save');
+        const newName = document.getElementById(id + '+name').textContent;
+        const newDni = document.getElementById(id + '+dni').textContent;
+
+        icon.style.visibility = 'visible';
+
+        // Remover el listener anterior si existe
+        if (listenerMap.has(id)) {
+            icon.removeEventListener('click', listenerMap.get(id));
+        }
+
+        // Crear un nuevo listener
+        const clickHandler = function() {
+            $.ajax({
+                url: window.location + 'update',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    id: id,
+                    dni: newDni,
+                    name: newName,
+                },
+                success: function(response) {
+                    debugger;
+                    Toastify({
+                        text: response['message'],
+                        duration: 2000,
+                        newWindow: true,
+                        gravity: "top",
+                        position: "left",
+                        stopOnFocus: true,
+                        style: {
+                            background: "linear-gradient(to right, #00b09b, #96c93d)",
+                        },
+                        onClick: function(){}
+                    }).showToast();
+
+                    // Remover el listener después de una actualización exitosa
+                    icon.removeEventListener('click', clickHandler);
+                    listenerMap.delete(id);
+                    icon.style.visibility = 'hidden';
+                }
+            });
+        };
+
+        // Añadir el nuevo listener y guardarlo en el mapa
+        icon.addEventListener('click', clickHandler);
+        listenerMap.set(id, clickHandler);
+
+        console.log(newName);
+    }, 100); // Retraso de 100ms
+}
 </script>

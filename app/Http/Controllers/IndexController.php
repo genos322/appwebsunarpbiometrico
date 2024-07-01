@@ -36,11 +36,12 @@ class IndexController extends Controller
 
         // Decodificar el contenido JSON
         $data = json_decode($jsonContent, true);
-
         // Insertar los datos
         $data['dni_list'][] = [
+            'id' => $request->input('id'),//genera un id unico
             'dni' => trim($request->input('dni')),
-            'nombre' => trim($request->input('name'))
+            'nombre' => trim($request->input('name')),
+            'rol' => trim($request->input('rol'))
         ];
 
         // Codificar los datos actualizados en formato JSON
@@ -49,7 +50,7 @@ class IndexController extends Controller
         // Escribir los datos actualizados en el archivo
         file_put_contents($filePath, $updatedJsonContent);
 
-        return dd($data);
+        return response()->json(['message' => 'Usuario registrado correctamente']);
     }
 
     public function update(Request $request)
