@@ -58,7 +58,7 @@
                                     <td id="{{$item['id'].'+dni'}}" contenteditable="true" onkeyup="update('{{$item['id']}}','{{$item['dni']}}','{{$item['nombre']}}','horario9')">{{$item['dni']}}</td>
                                     <td id="{{$item['id'].'+name'}}" contenteditable="true" onkeyup="update('{{$item['id']}}','{{$item['dni']}}','{{$item['nombre']}}','horario9')">{{$item['nombre']}}</td>
                                     <td class="flex flex-row justify-around gap-2">
-                                        <span class="hint--bottom" aria-label="ELMINAR">                                        <svg id="Layer_1" class="cursor-pointer" title="elminiar Usuario" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
+                                        <span class="hint--bottom" aria-label="ELMINAR" onclick="deleteRow('{{$item['id']}}')">                                        <svg id="Layer_1" class="cursor-pointer" title="elminiar Usuario" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
                                         <i class="cursor-pointer invisible hint--bottom" aria-label="Guardar" id="{{$item['id'].'+save'}}">✔</i>
                                     </td>
                                 </tr>
@@ -86,7 +86,7 @@
                                     <td id="{{$item['id'].'+dni'}}" contenteditable="true" onkeyup="update('{{$item['id']}}','{{$item['dni']}}','{{$item['nombre']}}','horario9')">{{$item['dni']}}</td>
                                     <td id="{{$item['id'].'+name'}}" contenteditable="true" onkeyup="update('{{$item['id']}}','{{$item['dni']}}','{{$item['nombre']}}','horario9')">{{$item['nombre']}}</td>
                                     <td class="flex flex-row justify-around gap-2">
-                                        <span class="hint--bottom" aria-label="ELMINAR"><svg class="cursor-pointer" aria-label="Thank you!"  id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
+                                        <span class="hint--bottom" aria-label="ELMINAR" onclick="deleteRow('{{$item['id']}}')"><svg class="cursor-pointer" aria-label="Thank you!"  id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
                                         <i class="cursor-pointer invisible hint--bottom" aria-label="Guardar" id="{{$item['id'].'+save'}}">✔</i>
                                     </td>
                                 </tr>
@@ -131,7 +131,7 @@
         `<div id="${id}+dni" contenteditable="true">Dni</div>`,
         `<div id="${id}+name" contenteditable="true">nomnbre</div>`,
         `<div class="flex flex-row justify-around gap-2" >
-            <span class="hint--bottom" aria-label="ELMINAR"><svg class="cursor-pointer" aria-label="Thank you!"  id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
+            <span class="hint--bottom" aria-label="ELMINAR" onclick="deleteRow('${id}')"><svg class="cursor-pointer" aria-label="Thank you!"  id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
             <i class="cursor-pointer hint--bottom" aria-label="Guardar" onclick="insert('${id}','horario9')">✔</i>
         </div>
         `
@@ -146,7 +146,7 @@
         `<div id="${id}+dni" contenteditable="true">Dni</div>`,
         `<div id="${id}+name" contenteditable="true">nomnbre</div>`,
         `<div class="flex flex-row justify-around gap-2" >
-            <span class="hint--bottom" aria-label="ELMINAR"><svg class="cursor-pointer" aria-label="Thank you!"  id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
+            <span class="hint--bottom" aria-label="ELMINAR" onclick="deleteRow('${id}')"><svg class="cursor-pointer" aria-label="Thank you!"  id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
             <i class="cursor-pointer hint--bottom" aria-label="Guardar" onclick="insert('${id}','jefe')">✔</i>
         </div>
         `
@@ -274,5 +274,58 @@ function update(id, dni, nombre) {
 
         console.log(newName);
     }, 100); // Retraso de 100ms
+}
+
+function deleteRow(id) {
+    let div = document.querySelector(`div[id="${id}+dni"]`);
+    if (div) {
+        let tr = div.closest('tr');
+        tr.remove();
+    } else {
+        let td = document.getElementById(id + '+dni');
+        if (td) {
+            // Encuentra el elemento tr padre
+            let tr = td.closest('tr');
+            
+            if (tr) {
+                // Opcional: Añadir una confirmación antes de eliminar
+                if (confirm('¿Estás seguro de que quieres eliminar esta fila?')) {
+                    // Elimina la fila
+                    tr.remove();
+                    
+                    // Aquí puedes añadir código adicional si necesitas hacer algo más,
+                    // como una llamada AJAX para eliminar el registro en el servidor
+                }
+            } else {
+                console.error('No se pudo encontrar la fila padre');
+            }
+        } else {
+            console.error('No se pudo encontrar el elemento con ID: ' + id + '+dni');
+        }
+    }
+    $.ajax({
+        url: window.location + 'delete',
+        type: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: {
+            id: id
+        },
+        success: function(response) {
+            Toastify({
+                text: response['message'],
+                duration: 2000,
+                newWindow: true,
+                gravity: "top",
+                position: "left",
+                stopOnFocus: true,
+                style: {
+                    background: "linear-gradient(to right, #00b09b, #96c93d)",
+                },
+                onClick: function(){}
+            }).showToast();
+        }
+    });
 }
 </script>

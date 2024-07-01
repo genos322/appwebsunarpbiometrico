@@ -86,4 +86,34 @@ class IndexController extends Controller
         return response()->json(['message' => 'Datos actualizados correctamente']);
     }
 
+    public function delete(Request $request)
+    {
+        $filePath = storage_path('data/config.json');
+
+        // Verificar si el archivo existe
+        if (!file_exists($filePath)) {
+            return response()->json(['error' => 'Archivo no encontrado'], 404);
+        }
+
+        // Leer el contenido del archivo
+        $jsonContent = file_get_contents($filePath);
+
+        // Decodificar el contenido JSON
+        $data = json_decode($jsonContent, true);
+        $id = trim(explode('+',$request->input('id'))[0]);
+        foreach ($data['dni_list'] as $key => $item) {
+            if ($item['id'] == $id) {
+                unset($data['dni_list'][$key]);
+                break;
+            }
+        }
+        // Codificar los datos actualizados en formato JSON
+        $updatedJsonContent = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+
+        // Escribir los datos actualizados en el archivo
+        file_put_contents($filePath, $updatedJsonContent);
+
+        return response()->json(['message' => 'Usuario eliminado correctamente']);
+    }
+
 }
