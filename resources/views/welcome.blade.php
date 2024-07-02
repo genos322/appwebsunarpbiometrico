@@ -128,30 +128,35 @@
     // Añadir una nueva fila a la tabla 'horario9'
     let id = uuidv4();                
     table.row.add([
-        `<div id="${id}+dni" contenteditable="true">Dni</div>`,
-        `<div id="${id}+name" contenteditable="true">nomnbre</div>`,
+        `<div id="${id}+dni" contenteditable="true">@</div>`,
+        `<div id="${id}+name" contenteditable="true">@</div>`,
         `<div class="flex flex-row justify-around gap-2" >
             <span class="hint--bottom" aria-label="ELMINAR" onclick="deleteRow('${id}')"><svg class="cursor-pointer" aria-label="Thank you!"  id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
             <i class="cursor-pointer hint--bottom" aria-label="Guardar" onclick="insert('${id}','horario9')">✔</i>
         </div>
         `
     ]).draw(false).node();
+    //para que la nueva fila aparezca al principio
+    table.order([0, 'desc']).draw();
+
             });
 
     document.getElementById('idAddUser1').addEventListener('click', function() {
     // Añadir una nueva fila a la tabla jefes
     let id = uuidv4();                
-
     table2.row.add([
-        `<div id="${id}+dni" contenteditable="true">Dni</div>`,
-        `<div id="${id}+name" contenteditable="true">nomnbre</div>`,
-        `<div class="flex flex-row justify-around gap-2" >
-            <span class="hint--bottom" aria-label="ELMINAR" onclick="deleteRow('${id}')"><svg class="cursor-pointer" aria-label="Thank you!"  id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
-            <i class="cursor-pointer hint--bottom" aria-label="Guardar" onclick="insert('${id}','jefe')">✔</i>
-        </div>
-        `
-    ]).draw(false).node();
-            });
+    `<div id="${id}+dni" contenteditable="true">@</div>`,
+    `<div id="${id}+name" contenteditable="true">@</div>`,
+    `<div class="flex flex-row justify-around gap-2">
+        <span class="hint--bottom" aria-label="ELMINAR" onclick="deleteRow('${id}')"><svg class="cursor-pointer" aria-label="Thank you!" id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
+        <i class="cursor-pointer hint--bottom" aria-label="Guardar" onclick="insert('${id}','jefe')">✔</i>
+    </div>`
+    ]).draw(false);
+
+    // Ordenar la tabla para que la nueva fila aparezca al principio
+    table2.order([0, 'desc']).draw();
+    });
+            
    
     // Función para generar un UUID v4
     function uuidv4() {

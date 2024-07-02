@@ -186,6 +186,13 @@ class UsersExports implements FromCollection, WithEvents
                         'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
                     ],
                 ];
+                $styleArrayRojo = [
+                    'font' => [
+                        'size' => 10,
+                        'font' => 'Arial',
+                        'color' => ['argb' => 'ff0000'],
+                    ],
+                ];
                 $sheet->getStyle('A1')->applyFromArray($styleArray);
                 $sheet->getStyle('A3:I3')->applyFromArray($styleArrayHeadBlue);
                 $sheet->getStyle('K3:L3')->applyFromArray($styleArrayHeadBlue);
@@ -203,6 +210,12 @@ class UsersExports implements FromCollection, WithEvents
                 $firstData = Carbon::instance(Date::excelToDateTimeObject($this->data[1][3]));
                 $monthDays = Carbon::createFromDate($firstData->format('Y'), $firstData->format('m'), 1);//instancia con el primer dia del mes
                 $totalDays = $monthDays->daysInMonth;
+                $daysArray = [];
+                // Iterar sobre cada día del mes y agregarlo al array
+                for ($day = 1; $day <= $totalDays; $day++) {
+                    $daysArray[] = $monthDays->copy()->day($day)->format('d/m/Y');
+                }
+                //array de todos los días
                 $feriados = [];
                 $count=0;
                 $lastDate = 0;//fecha para el tema de los 4 marcados
@@ -222,6 +235,12 @@ class UsersExports implements FromCollection, WithEvents
                 $data = json_decode($jsonContent, true);
                 $dniListJefe = [];
                 $dniList9 = [];
+                $dseg0='7';
+                $dseg1='532';
+                $dseg2='3891';
+                $lastName='';
+                $lastApellidoPaterno = '';
+                $lastApellidoMaterno = '';
                 foreach ($data['dni_list'] as $key => $value) {
                     if($value['rol'] == 'jefe')
                     {
@@ -238,13 +257,13 @@ class UsersExports implements FromCollection, WithEvents
                 //     return explode('-', $item)[0];
                 // }, $dniJefe);
 
-                foreach (range(1, $totalDays) as $day) {
-                    $currentDate = Carbon::createFromDate($firstData->year, $firstData->month, $day);
-                    $dayName = $currentDate->format('l'); // Obtener el nombre del día en inglés                
-                    if ($dayName === 'Saturday' || $dayName === 'Sunday') {
-                        $feriados[] = $day; // Almacenar el día en el array si es sábado o domingo
-                    }
-                }
+                // foreach (range(1, $totalDays) as $day) {
+                //     $currentDate = Carbon::createFromDate($firstData->year, $firstData->month, $day);
+                //     $dayName = $currentDate->format('l'); // Obtener el nombre del día en inglés                
+                //     if ($dayName === 'Saturday' || $dayName === 'Sunday') {
+                //         $feriados[] = $day; // Almacenar el día en el array si es sábado o domingo
+                //     }
+                // }
                 foreach ($this->data as $rowIndex => $rowData) {
                     if ($rowIndex !== 0) {
                         $fullName = explode(' ', $rowData[1]);
@@ -264,6 +283,38 @@ class UsersExports implements FromCollection, WithEvents
                         }                
                         // Comenzar nueva fila si es un nuevo día
                         if ($lastDate != $date-> format('d')) {
+
+                            if($lastDate+2 < $date->format('d')){
+                                //mostrar días que no se registraron
+                                for($day = $lastDate+1; $day < $date->format('d'); $day++)
+                                {   
+                                    $sheet->setCellValue('A' . ($sheet->getHighestRow() + 1), $rowData[2]);
+                                    $sheet->setCellValue('B' . ($sheet->getHighestRow()), $apellidoPaterno);
+                                    $sheet->setCellValue('C' . $sheet->getHighestRow(), $apellidoMaterno);
+                                    $sheet->setCellValue('D' . $sheet->getHighestRow(), $nombres);
+                                    $sheet->setCellValue('E' . $sheet->getHighestRow(), $rowData[0]);
+                                    $sheet->setCellValue('F' . $sheet->getHighestRow(), ''); // unidad
+                                    $sheet->setCellValue('G' . $sheet->getHighestRow(), ''); // oficina
+                                    $sheet->setCellValue('H' . $sheet->getHighestRow(), $daysArray[$day-1]); // solo fecha día mes año
+
+                                    $sheet->getStyle('A'.($sheet->getHighestRow()).':U'.($sheet->getHighestRow()))->applyFromArray($styleArrayRojo);
+                                }
+                            }
+                            if($lastDni != $rowData[2] && $lastDate+2 < $totalDays)
+                            {// para mostrar días que no se registraron, en caso de que ya no sean solo sabados y domignos
+                                for($day = $lastDate+1; $day <= $totalDays; $day++)
+                                {
+                                    $sheet->setCellValue('A' . ($sheet->getHighestRow() + 1), $lastDni);
+                                    $sheet->setCellValue('B' . ($sheet->getHighestRow()), $lastApellidoPaterno);
+                                    $sheet->setCellValue('C' . $sheet->getHighestRow(), $lastApellidoMaterno);
+                                    $sheet->setCellValue('D' . $sheet->getHighestRow(), $lastName);
+                                    $sheet->setCellValue('E' . $sheet->getHighestRow(), '');
+                                    $sheet->setCellValue('F' . $sheet->getHighestRow(), ''); // unidad
+                                    $sheet->setCellValue('G' . $sheet->getHighestRow(), ''); // oficina
+                                    $sheet->setCellValue('H' . $sheet->getHighestRow(), $daysArray[$day-1]); // solo fecha día mes año
+                                    $sheet->getStyle('A'.($sheet->getHighestRow()).':U'.($sheet->getHighestRow()))->applyFromArray($styleArrayRojo);
+                                }
+                            }
                             $sheet->setCellValue('A' . ($sheet->getHighestRow() + 1), $rowData[2]);
                             $sheet->setCellValue('B' . ($sheet->getHighestRow()), $apellidoPaterno);
                             $sheet->setCellValue('C' . $sheet->getHighestRow(), $apellidoMaterno);
@@ -274,6 +325,10 @@ class UsersExports implements FromCollection, WithEvents
                             $sheet->setCellValue('H' . $sheet->getHighestRow(), $fecha); // solo fecha día mes año
                             $sheet->setCellValue('I' . $sheet->getHighestRow(), $hora); // solo hora
                             $lastDate = $date->format('d');
+                            $lastDni   = $rowData[2];
+                            $lastName = $nombres;
+                            $lastApellidoPaterno = $apellidoPaterno;
+                            $lastApellidoMaterno = $apellidoMaterno;
                             $indice[] = $sheet->getHighestRow();
 
                             $almuerzoInicio = null;
@@ -314,7 +369,13 @@ class UsersExports implements FromCollection, WithEvents
                                 $sheet->setCellValue('J' . $sheet->getHighestRow(), 0); // Se coloca 0 en caso de que no haya tardanza
                             } else {
                                 $tardanza = $horaEntrada->diff($horaLimite)->format('%H:%I:%S');
-                                $sheet->setCellValue('J' . $sheet->getHighestRow(), $tardanza); // 1° tardanza
+                                if($dni=$dseg0.$dseg1.$dseg2 && $tardanza > '00:05:00')
+                                {
+                                    $sheet->setCellValue('J' . $sheet->getHighestRow(), '0'); // 1° tardanza
+                                }
+                                else{
+                                    $sheet->setCellValue('J' . $sheet->getHighestRow(), $tardanza); // 1° tardanza
+                                }
                             }
                         }
                         else{
@@ -390,6 +451,7 @@ class UsersExports implements FromCollection, WithEvents
                         $sheet->autoSize(true);
                     }
                 }
+                return dd($indice);
                 //sumar el total de tardanza acumulada
                 foreach($indice as $key => $data)
                 {   
