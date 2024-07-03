@@ -225,6 +225,7 @@ class UsersExports implements FromCollection, WithEvents
                 $rowIndexesByDNI = [];
                 $data = '';
                 $indice = [];
+                $indiceCaseNot = [];//para los casos que no se encuentre el  número de celda debido a que la fecha no se encuentra en el rango de los marcados
                 $flag = 0;
                 $sumaTotal = Carbon::createFromTime(0, 0, 0);
                 $almuerzoInicio = null;
@@ -304,6 +305,7 @@ class UsersExports implements FromCollection, WithEvents
                             {// para mostrar días que no se registraron, en caso de que ya no sean solo sabados y domignos
                                 for($day = $lastDate+1; $day <= $totalDays; $day++)
                                 {
+                                    
                                     $sheet->setCellValue('A' . ($sheet->getHighestRow() + 1), $lastDni);
                                     $sheet->setCellValue('B' . ($sheet->getHighestRow()), $lastApellidoPaterno);
                                     $sheet->setCellValue('C' . $sheet->getHighestRow(), $lastApellidoMaterno);
@@ -313,6 +315,11 @@ class UsersExports implements FromCollection, WithEvents
                                     $sheet->setCellValue('G' . $sheet->getHighestRow(), ''); // oficina
                                     $sheet->setCellValue('H' . $sheet->getHighestRow(), $daysArray[$day-1]); // solo fecha día mes año
                                     $sheet->getStyle('A'.($sheet->getHighestRow()).':U'.($sheet->getHighestRow()))->applyFromArray($styleArrayRojo);
+                                    if($day == $totalDays)
+                                    {
+                                        $indiceCaseNot[] = $sheet->getHighestRow();//para evitar el problema del fin de pintado de celda
+                                    }
+
                                 }
                             }
                             $sheet->setCellValue('A' . ($sheet->getHighestRow() + 1), $rowData[2]);
@@ -451,61 +458,66 @@ class UsersExports implements FromCollection, WithEvents
                         $sheet->autoSize(true);
                     }
                 }
-                return dd($indice);
                 //sumar el total de tardanza acumulada
-                foreach($indice as $key => $data)
+                //uniendo los 2 arrays
+                $mergeIndice = array_merge($indice, $indiceCaseNot);
+                sort($mergeIndice);
+                foreach($mergeIndice as $key => $data)
                 {   
                      //para el segundo marcado - segunda tardanza
+
                     $datos = $sheet->getCell('O'.$data)->getValue();
                     $sum = Carbon::createFromFormat('H:i:s', !empty($datos) ? $datos : '00:00:00');
-                    if($sheet->getCell('A'.$data)->getValue() == $sheet->getCell('A'.($data+1))->getValue())
+                    // $celda_1= $sheet->getCell('A'.$data-1)->getValue();
+                    if($sheet->getCell('A'.$data)->getValue()== $sheet->getCell('A'.($data+1))->getValue())//verificando cual es la celda inicial para que se pueda sumar
                     {
                         if($sumaTotal->hour == 0 && $sumaTotal->minute == 0 && $sumaTotal->second == 0 && $flag == 0)
                         {
                             $firstRow = $data;
                             $flag = 1;
                         }
+
                         $sumaTotal = $sumaTotal
                         ->addHours($sum->hour)
                         ->addMinutes($sum->minute)
                         ->addSeconds($sum->second);
                         
                     }
-                    else
-                    {
-                        $sheet->mergeCells('P'.($firstRow).':P'.($data));
-                        $sheet->getStyle('A'.$firstRow.':T'.$data)->applyFromArray([
-                            'borders' => [
-                                'allBorders' => [
-                                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                                    'color' => ['rgb' => '000000'], // Color
-                                ]
-                            ],
-                        ]);
-                        $sheet->getStyle('P'.$firstRow.':P'.$data)->applyFromArray([
-                            'fill' => [
-                                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                                'color' => ['rgb' => 'b29de5'],
-                            ],
-                            'borders' => [
-                                'allBorders' => [
-                                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                                    'color' => ['rgb' => '000000'], // Color
-                                ]
-                            ],
-                            'alignment' => [
-                                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-                            ],
-                        ]);
-                        $sumaTotal = $sumaTotal
-                        ->addHours($sum->hour)
-                        ->addMinutes($sum->minute)
-                        ->addSeconds($sum->second);
-                        $sheet->setCellValue('P'.$firstRow,$sumaTotal->format('H:i:s'));
-                        $sumaTotal = Carbon::createFromTime(0, 0, 0);
-                        $flag = 0;
-                    }
+                   else{
+                            $sheet->mergeCells('P'.($firstRow).':P'.($data));
+                            $sheet->getStyle('A'.$firstRow.':T'.$data)->applyFromArray([
+                                'borders' => [
+                                    'allBorders' => [
+                                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                                        'color' => ['rgb' => '000000'], // Color
+                                    ]
+                                ],
+                            ]);
+                            $sheet->getStyle('P'.$firstRow.':P'.$data)->applyFromArray([
+                                'fill' => [
+                                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                                    'color' => ['rgb' => 'b29de5'],
+                                ],
+                                'borders' => [
+                                    'allBorders' => [
+                                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                                        'color' => ['rgb' => '000000'], // Color
+                                    ]
+                                ],
+                                'alignment' => [
+                                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                                ],
+                            ]);
+                            $sumaTotal = $sumaTotal
+                            ->addHours($sum->hour)
+                            ->addMinutes($sum->minute)
+                            ->addSeconds($sum->second);
+                            $sheet->setCellValue('P'.$firstRow,$sumaTotal->format('H:i:s'));
+                            $sumaTotal = Carbon::createFromTime(0, 0, 0);
+                            $flag = 0;
+                        }
+          
                 }
                 // Crear otra hoja
                 $additionalSheet = new Worksheet(null, 'Other page');
