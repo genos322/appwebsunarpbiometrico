@@ -1,12 +1,53 @@
 'use strict';
 document.addEventListener('DOMContentLoaded', function () {
-    // Your code here
     let btn = document.getElementById('sendExcel');
-    btn.addEventListener('click', function () {
-        let form = document.getElementById('excelForm');
-        form.submit();
+    let form = document.getElementById('excelForm');
+    
+    btn.addEventListener('click', function (e) {
+        e.preventDefault(); // Previene el envío normal del formulario
+        
+        let formData = new FormData(form);
+        
+        document.querySelector('.loader').style.display = 'block';
+
+        // Primero, hacemos una petición AJAX para iniciar el proceso
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (response.headers.get('Content-Type').includes('application/json')) {
+                return response.json();
+            } else {
+                return response.blob();
+            }
+        })
+        .then(data => {
+            document.querySelector('.loader').style.display = 'none';
+            if (data instanceof Blob) {
+                // Si es un archivo, lo descargamos
+                const url = window.URL.createObjectURL(data);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                // Usamos un nombre de archivo predeterminado, ya que no podemos obtener el nombre real
+                a.download = 'exported_file.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            } else {
+                // Si es JSON, manejamos la respuesta (por ejemplo, mostrar un mensaje)
+                console.log('Respuesta del servidor:', data);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            document.querySelector('.loader').style.display = 'none';
+            // Aquí puedes manejar los errores
+        });
     });
-              let dni = '';
-        let name = '';
-        let flag = 0;
 });

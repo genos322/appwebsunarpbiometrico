@@ -18,17 +18,25 @@
             <h1 class="text-yellow-300 text-4xl font-black font-sans">GENERADOR DE REPORTES</h1>
             <section class="w-[800px] mx-auto flex flex-row mt-32 items-center justify-between">
                 <div class=" flex flex-col items-start wrap">
-                <form id="excelForm" action="{{url('/upload')}}" method="POST" enctype="multipart/form-data">
-                    <div class="grid w-full max-w-xs items-center gap-1.5">
-                        <input
-                          class="flex w-full rounded-md border border-blue-300 border-input bg-white text-sm text-gray-900 file:border-0 file:bg-blue-400 file:text-white file:text-sm file:font-medium"
-                          type="file"
-                          id="file"
-                          name="file"
-                        />
-                      </div>                      
-                    @csrf                        
-                </form>
+                    <form id="excelForm" action="{{url('/upload')}}" method="POST" enctype="multipart/form-data">
+                        <div class="grid w-full max-w-xs items-center gap-1.5">
+                            <input
+                            class="flex w-full rounded-md border border-blue-300 border-input bg-white text-sm text-gray-900 file:border-0 file:bg-blue-400 file:text-white file:text-sm file:font-medium"
+                            type="file"
+                            id="file"
+                            name="file"
+                            />
+                        </div>                      
+                        @csrf                        
+                    </form>
+                </div>
+                <div class="loader hidden">
+                    <div class="center-body">
+                        <div class="loader-circle-9">
+                          Cargando
+                          <span></span>
+                        </div>
+                      </div>
                 </div>
                 <div>
                     <button id="sendExcel" class="button" type="submit">
@@ -282,6 +290,7 @@ function update(id, dni, nombre) {
 }
 
 function deleteRow(id) {
+    let flag = false;
     let div = document.querySelector(`div[id="${id}+dni"]`);
     if (div) {
         let tr = div.closest('tr');
@@ -294,8 +303,9 @@ function deleteRow(id) {
             
             if (tr) {
                 // Opcional: Añadir una confirmación antes de eliminar
-                if (confirm('¿Estás seguro de que quieres eliminar esta fila?')) {
+                if (confirm('¿Estás seguro de que quieres eliminar a este usuario?')) {
                     // Elimina la fila
+                    flag = true;
                     tr.remove();
                     
                     // Aquí puedes añadir código adicional si necesitas hacer algo más,
@@ -308,7 +318,8 @@ function deleteRow(id) {
             console.error('No se pudo encontrar el elemento con ID: ' + id + '+dni');
         }
     }
-    $.ajax({
+    if(flag){
+        $.ajax({
         url: window.location + 'delete',
         type: 'POST',
         headers: {
@@ -332,5 +343,7 @@ function deleteRow(id) {
             }).showToast();
         }
     });
+    }
+
 }
 </script>
