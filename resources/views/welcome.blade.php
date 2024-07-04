@@ -9,11 +9,29 @@
     <link rel="stylesheet" href="{{asset('plugins/datatables/datatables.min.css')}}">
     <link rel="stylesheet" href="{{asset('plugins/tooltip/hint.css')}}">
     <link rel="stylesheet" href="{{asset('plugins/notify/toastify.min.css')}}">
-    
+    <script src="{{asset('plugins/notify/toastify.min.js')}}"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body class="fondo bg-cover">
     <main>
+        @if(Session::has('error'))
+            @foreach(Session::get('error') as $error)
+            <script>
+                Toastify({
+                text: `{{$error}}`,  // Usa data.message en lugar de response['message']
+                duration: 2000,
+                newWindow: true,
+                gravity: "top",
+                position: "left",
+                stopOnFocus: true,
+                style: {
+                    background: "linear-gradient(90deg, rgba(231,93,93,1) 0%, rgba(200,43,71,1) 47%, rgba(252,12,195,1) 100%)",
+                },
+                onClick: function(){}
+            }).showToast();
+            </script>
+            @endforeach
+        @endif
         <div class="flex flex-col wrap items-center w-[900px] mx-auto h-full pt-[8rem]">
             <h1 class="text-yellow-300 text-4xl font-black font-sans">GENERADOR DE REPORTES</h1>
             <section class="w-[800px] mx-auto flex flex-row mt-32 items-center justify-between">
@@ -32,7 +50,7 @@
                 </div>
                 <div class="loader hidden">
                     <div class="center-body">
-                        <div class="loader-circle-9">
+                        <div class="loader-circle-9 italic font-mono">
                           Cargando
                           <span></span>
                         </div>
@@ -114,7 +132,6 @@
 </html>
 <script src="{{asset('plugins/jquery.min.js')}}"></script>
 <script src="{{asset('plugins/datatables/datatables.min.js')}}"></script>
-<script src="{{asset('plugins/notify/toastify.min.js')}}"></script>
 <script src="{{asset('../resources/js/app.js')}}"></script>
 <script>
     let table = new DataTable('#horario9',{

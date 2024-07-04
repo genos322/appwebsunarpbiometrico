@@ -2,6 +2,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     let btn = document.getElementById('sendExcel');
     let form = document.getElementById('excelForm');
+    btn.addEventListener('click', function (e) {
+        form.submit();
+    });
     
     btn.addEventListener('click', function (e) {
         e.preventDefault(); // Previene el envío normal del formulario
@@ -41,6 +44,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.URL.revokeObjectURL(url);
             } else {
                 // Si es JSON, manejamos la respuesta (por ejemplo, mostrar un mensaje)
+                Toastify({
+                    text: data.message,  // Usa data.message en lugar de response['message']
+                    duration: 2000,
+                    newWindow: true,
+                    gravity: "top",
+                    position: "left",
+                    stopOnFocus: true,
+                    style: {
+                        background: "linear-gradient(to right, #00b09b, #96c93d)",
+                    },
+                    onClick: function(){}
+                }).showToast();
                 console.log('Respuesta del servidor:', data);
             }
         })

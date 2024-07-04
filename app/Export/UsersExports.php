@@ -376,7 +376,7 @@ class UsersExports implements FromCollection, WithEvents
                                 $sheet->setCellValue('J' . $sheet->getHighestRow(), 0); // Se coloca 0 en caso de que no haya tardanza
                             } else {
                                 $tardanza = $horaEntrada->diff($horaLimite)->format('%H:%I:%S');
-                                if($dni=$dseg0.$dseg1.$dseg2 && $tardanza > '00:05:00')
+                                if($dni==$dseg0.$dseg1.$dseg2 && $tardanza > '00:05:00')
                                 {
                                     $sheet->setCellValue('J' . $sheet->getHighestRow(), '0'); // 1° tardanza
                                 }
