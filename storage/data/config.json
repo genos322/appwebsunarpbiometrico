@@ -1,0 +1,76 @@
+{
+    "dni_list": {
+        "1": {
+            "id": 2,
+            "dni": "40275739",
+            "nombre": "MORRIBERON BEINGOLEA MARITZA",
+            "rol": "horario9"
+        },
+        "2": {
+            "id": 3,
+            "dni": "44508292",
+            "nombre": "ZAGA VILA ALESSANDRA DIA",
+            "rol": "horario9"
+        },
+        "3": {
+            "id": 4,
+            "dni": "46370388",
+            "nombre": "MOREYRA ROMANÍ IBET MARG",
+            "rol": "horario9"
+        },
+        "4": {
+            "id": 5,
+            "dni": "43110266",
+            "nombre": "FLORES CALDERÓN IVAN",
+            "rol": "horario9"
+        },
+        "5": {
+            "id": 6,
+            "dni": "9555767",
+            "nombre": "ROJAS ESPINOZA REMIGIO A",
+            "rol": "jefe"
+        },
+        "6": {
+            "id": 7,
+            "dni": "22185728",
+            "nombre": "HERNANDEZ CONTRERAS JUAN",
+            "rol": "jefe"
+        },
+        "7": {
+            "id": 8,
+            "dni": "41346060",
+            "nombre": "HUAMAN YANARICO MIGUEL ANGEL",
+            "rol": "jefe"
+        },
+        "8": {
+            "id": 9,
+            "dni": "40059729",
+            "nombre": "PORTILLA SANTA CRUZ JIMM",
+            "rol": "jefe"
+        },
+        "9": {
+            "id": 10,
+            "dni": "43514144",
+            "nombre": "SÁNCHEZ YANGALI MAX ANTO",
+            "rol": "jefe"
+        },
+        "10": {
+            "id": 11,
+            "dni": "46469718",
+            "nombre": "CÁRDENAS MENDOZA JHOAN S",
+            "rol": "jefe"
+        },
+        "11": {
+            "id": 12,
+            "dni": "45278683",
+            "nombre": "JIMÉNEZ CÁRDENAS PAUL JH",
+            "rol": "jefe"
+        },
+        "12":{
+            "id": 13,
+            "dni": "70772266",
+            "nombre": "PALOMINO MELGAR CRISTHIAN",
+            "rol": "horario9"
+        }
+    }
+}

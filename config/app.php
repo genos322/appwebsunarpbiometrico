@@ -128,5 +128,24 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+    'dni_list_horario_9' => [
+        '70772266-PALOMINO MELGAR CRISTHIAN',//pavel melgar
+        '40275739-MORRIBERON BEINGOLEA MAR',//maritza
+        '44508292-ZAGA VILA ALESSANDRA DIA',//alessandra
+        '46370388-MOREYRA ROMANÍ IBET MARG',//IBET MOREYRA
+        '43110266-FLORES CALDERÓN IVAN',//ivan
+
+        // Añade más DNIs aquí
+    ],
+    'dni_list_jefe' => [
+        '9555767-ROJAS ESPINOZA REMIGIO A',//remigio rojas
+        '22185728-HERNANDEZ CONTRERAS JUAN',//juan carlos hernandez
+        '41346060-HUAMAN YANARICO MIGUEL A',//miguel angel
+        '40059729-PORTILLA SANTA CRUZ JIMM',//postilla miguel
+        '43514144-SÁNCHEZ YANGALI MAX ANTO',//max sanchez
+        '46469718-CÁRDENAS MENDOZA JHOAN S',//cárdenas johan  
+        '45278683-JIMÉNEZ CÁRDENAS PAUL JH',//jimenez paul      
+        // Añade más DNIs aquí
+    ],
 
 ];
