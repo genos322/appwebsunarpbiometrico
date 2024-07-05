@@ -34,6 +34,14 @@ class UploadController extends Controller
                 // return dd($processedData);
                 $exportFileName = 'processed_data_' . time() . '.xlsx';
                 return Excel::download(new UsersExports($processedData), $exportFileName);//exportFileName es el nombre del archivo que se descargara
+                // $exportFileName = 'processed_data_' . time() . '.xlsx';
+                // $path = storage_path('app/public/' . $exportFileName);
+                // Excel::store(new UsersExports($processedData), 'public/' . $exportFileName);
+
+                return response()->json([
+                    'file_url' => asset('storage/' . $exportFileName),
+                    'message' => 'Archivo generado con éxito'
+                ]);
             } else {
                 // Maneja el caso en que no se envió un archivo válido
                 Session::flash('error', ['Por favor, seleccione un archivo Excel válido.']);

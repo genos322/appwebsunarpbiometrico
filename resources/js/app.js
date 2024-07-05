@@ -23,46 +23,68 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         })
         .then(response => {
-            if (response.headers.get('Content-Type').includes('application/json')) {
-                return response.json();
-            } else {
-                return response.blob();
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
+            return response.blob();
         })
-        .then(data => {
+        .then(blob => {
             document.querySelector('.loader').style.display = 'none';
-            if (data instanceof Blob) {
-                // Si es un archivo, lo descargamos
-                const url = window.URL.createObjectURL(data);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                // Usamos un nombre de archivo predeterminado, ya que no podemos obtener el nombre real
-                a.download = 'exported_file.xlsx';
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-            } else {
-                // Si es JSON, manejamos la respuesta (por ejemplo, mostrar un mensaje)
-                Toastify({
-                    text: data.message,  // Usa data.message en lugar de response['message']
-                    duration: 2000,
-                    newWindow: true,
-                    gravity: "top",
-                    position: "left",
-                    stopOnFocus: true,
-                    style: {
-                        background: "linear-gradient(to right, #00b09b, #96c93d)",
-                    },
-                    onClick: function(){}
-                }).showToast();
-                console.log('Respuesta del servidor:', data);
-            }
+            
+            // Crear un objeto URL para el blob
+            const url = window.URL.createObjectURL(blob);
+            
+            // Crear un enlace invisible y hacer clic en él para descargar
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = response.headers.get('Content-Disposition') ? 
+                response.headers.get('Content-Disposition').split('filename=')[1] : 
+                'exported_file.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            
+            // Limpiar
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        
+            // Mostrar un mensaje de éxito
+            Toastify({
+                text: "Archivo descargado con éxito",
+                duration: 2000,
+                newWindow: true,
+                gravity: "top",
+                position: "left",
+                stopOnFocus: true,
+                style: {
+                    background: "linear-gradient(to right, #00b09b, #96c93d)",
+                },
+                onClick: function(){}
+            }).showToast();
         })
         .catch((error) => {
             console.error('Error:', error);
             document.querySelector('.loader').style.display = 'none';
             // Aquí puedes manejar los errores
+            Toastify({
+                text: "Error al descargar el archivo",
+                duration: 2000,
+                newWindow: true,
+                gravity: "top",
+                position: "left",
+                stopOnFocus: true,
+                style: {
+                    background: "linear-gradient(to right, #ff0000, #ff5733)",
+                },
+                onClick: function(){}
+            }).showToast();
         });
     });
+//reconcer que el archivo se ha subido
+    document.getElementById('file').addEventListener('change', function() {
+        let fileName = this.files[0].name;
+        let fileNameSpan = document.getElementById('file-name');
+        fileNameSpan.textContent = 'Archivo seleccionado: ' + fileName;
+    });
+    
 });

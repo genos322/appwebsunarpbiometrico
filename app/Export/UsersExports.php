@@ -524,11 +524,11 @@ class UsersExports implements FromCollection, WithEvents
                 $event->sheet->getParent()->addSheet($additionalSheet);
 
                 // Agregar datos a la otra hoja
-                foreach ($this->data as $rowIndex => $rowData) {
-                    foreach ($rowData as $columnIndex => $value) {
-                        $additionalSheet->setCellValueByColumnAndRow($columnIndex + 1, $rowIndex + 1, $value);
-                    }
-                }
+                // foreach ($this->data as $rowIndex => $rowData) {
+                //     foreach ($rowData as $columnIndex => $value) {
+                //         $additionalSheet->setCellValueByColumnAndRow($columnIndex + 1, $rowIndex + 1, $value);
+                //     }
+                // }
             },
         ];
     }
