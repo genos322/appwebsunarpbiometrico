@@ -7,12 +7,13 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     
     btn.addEventListener('click', function (e) {
-        e.preventDefault(); // Previene el envío normal del formulario
+        e.preventDefault();
+        e.stopPropagation();
         
         let formData = new FormData(form);
         
         document.querySelector('.loader').style.display = 'block';
-
+    
         // Primero, hacemos una petición AJAX para iniciar el proceso
         fetch(form.action, {
             method: 'POST',
@@ -26,27 +27,31 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            return response.blob();
+            return response.blob().then(blob => ({
+                blob: blob,
+                contentDisposition: response.headers.get('Content-Disposition')
+            }));
         })
-        .then(blob => {
+        .then(({ blob, contentDisposition }) => {
             document.querySelector('.loader').style.display = 'none';
+    
+            let fileName = 'exported_file.xlsx';
+            if (contentDisposition && contentDisposition.indexOf('attachment') !== -1) {
+                const fileNameMatch = contentDisposition.match(/filename="?(.+)"?/i);
+                if (fileNameMatch) {
+                    fileName = fileNameMatch[1];
+                }
+            }
             
-            // Crear un objeto URL para el blob
-            const url = window.URL.createObjectURL(blob);
+            // const url = window.URL.createObjectURL(blob);
+            // const link = document.createElement('a');
+            // link.href = url;
+            // link.download = fileName;
             
-            // Crear un enlace invisible y hacer clic en él para descargar
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = response.headers.get('Content-Disposition') ? 
-                response.headers.get('Content-Disposition').split('filename=')[1] : 
-                'exported_file.xlsx';
-            document.body.appendChild(a);
-            a.click();
-            
-            // Limpiar
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
+            // document.body.appendChild(link);
+            // link.click();
+            // document.body.removeChild(link);
+            // window.URL.revokeObjectURL(url);
         
             // Mostrar un mensaje de éxito
             Toastify({
@@ -62,10 +67,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 onClick: function(){}
             }).showToast();
         })
-        .catch((error) => {
+        .catch(error => {
             console.error('Error:', error);
             document.querySelector('.loader').style.display = 'none';
-            // Aquí puedes manejar los errores
+            
+            // Mostrar un mensaje de error
             Toastify({
                 text: "Error al descargar el archivo",
                 duration: 2000,
@@ -74,12 +80,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 position: "left",
                 stopOnFocus: true,
                 style: {
-                    background: "linear-gradient(to right, #ff0000, #ff5733)",
+                    background: "linear-gradient(to right, #b00020, #c93d3d)",
                 },
                 onClick: function(){}
             }).showToast();
         });
     });
+    
+    
+    
 //reconcer que el archivo se ha subido
     document.getElementById('file').addEventListener('change', function() {
         let fileName = this.files[0].name;

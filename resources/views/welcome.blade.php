@@ -81,7 +81,7 @@
                 </div>
             </section>
             <div class="mt-10 pt-6 flex flex-wrap justify-around items-start item backdrop-invert-[35%] backdrop-blur-md w-[1200px] h-[720px] rounded-lg">
-                <h1 class="w-1/2 text-center text-white text-3xl font-bold font-mono">PERSONAL ENTRADA 9</h1>
+                <h1 class="w-1/2 text-center text-white text-3xl font-bold font-mono">PERSONAL ENTRADA 9 AM</h1>
                 <h1 class="w-1/2 text-center text-white text-3xl font-bold font-mono">JEFES</h1>
                 <div class="w-full text-white flex flex-row flex-wrap justify-around items-start gap-8">
                     <table id="horario9" class="bg-white display rounded-md min-h-[380px] max-h-[380px]">

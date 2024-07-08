@@ -38,10 +38,10 @@ class UploadController extends Controller
                 // $path = storage_path('app/public/' . $exportFileName);
                 // Excel::store(new UsersExports($processedData), 'public/' . $exportFileName);
 
-                return response()->json([
-                    'file_url' => asset('storage/' . $exportFileName),
-                    'message' => 'Archivo generado con éxito'
-                ]);
+                // return response()->json([
+                //     'file_url' => asset('storage/' . $exportFileName),
+                //     'message' => 'Archivo generado con éxito'
+                // ]);
             } else {
                 // Maneja el caso en que no se envió un archivo válido
                 Session::flash('error', ['Por favor, seleccione un archivo Excel válido.']);
