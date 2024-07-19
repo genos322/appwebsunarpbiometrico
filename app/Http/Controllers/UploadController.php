@@ -24,24 +24,10 @@ class UploadController extends Controller
                     // A modo de ejemplo, simplemente almacenaremos los datos en un nuevo array
                     $processedData[] = $row;
                 }
-                // $type = $processedData[0][0];//tipo de contrato
-                // $name = $processedData[0][1];//nombre del personal
-                // $dni = $processedData[0][2];//dni del personal
-                // $fecha = $processedData[0][3];//fecha asistencias
-                // $locacion = $processedData[0][4];//locacion id
-                // $codVerificacion = $processedData[0][6];//codigo de verificacion
-                // Crea un nuevo archivo Excel con los datos procesados
-                // return dd($processedData);
+
                 $exportFileName = 'processed_data_' . time() . '.xlsx';
                 return Excel::download(new UsersExports($processedData), $exportFileName);//exportFileName es el nombre del archivo que se descargara
-                // $exportFileName = 'processed_data_' . time() . '.xlsx';
-                // $path = storage_path('app/public/' . $exportFileName);
-                // Excel::store(new UsersExports($processedData), 'public/' . $exportFileName);
 
-                // return response()->json([
-                //     'file_url' => asset('storage/' . $exportFileName),
-                //     'message' => 'Archivo generado con éxito'
-                // ]);
             } else {
                 // Maneja el caso en que no se envió un archivo válido
                 Session::flash('error', ['Por favor, seleccione un archivo Excel válido.']);

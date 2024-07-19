@@ -18,6 +18,7 @@
     <main>
         @if(Session::has('error'))
             @foreach(Session::get('error') as $error)
+            <h1 class="bg-white text-9xl">{{$error}}</h1>
             <script>
                 Toastify({
                 text: `{{$error}}`,  // Usa data.message en lugar de response['message']
@@ -49,7 +50,7 @@
                         </div>                      
                     </form> --}}
                     <form class="file-upload-form text-white" id="excelForm" action="{{url('/upload')}}" method="POST" enctype="multipart/form-data">
-                        <label for="file" class="file-upload-label">
+                        <label for="file" class="file-upload-label drop-zone" id="drop-area">
                             <div class="file-upload-design">
                                 @csrf                        
                                 <svg viewBox="0 0 640 512" height="1em" style="fill:rgb(255 255 255);">
@@ -59,9 +60,9 @@
                                 <span class="browse-button">Buscar archivo</span>
                                 <span id="file-name" class="file-name"></span>
                             </div>
-                            <input id="file" type="file" name="file"/>
+                            <input id="file" type="file" name="file" style="display:none;"/>
                         </label>
-                    </form>                                       
+                    </form>                        
                 </div>
                 <div class="loader hidden">
                     <div class="center-body">

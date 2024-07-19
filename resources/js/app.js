@@ -42,16 +42,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     fileName = fileNameMatch[1];
                 }
             }
-            
-            // const url = window.URL.createObjectURL(blob);
-            // const link = document.createElement('a');
-            // link.href = url;
-            // link.download = fileName;
-            
-            // document.body.appendChild(link);
-            // link.click();
-            // document.body.removeChild(link);
-            // window.URL.revokeObjectURL(url);
         
             // Mostrar un mensaje de éxito
             Toastify({
@@ -96,4 +86,53 @@ document.addEventListener('DOMContentLoaded', function () {
         fileNameSpan.textContent = 'Archivo seleccionado: ' + fileName;
     });
     
+    
+    const dropArea = document.getElementById('drop-area');
+    const fileInput = document.getElementById('file');
+    const fileNameDisplay = document.getElementById('file-name');
+
+    // sirve para prevenir que el navegador abra el archivo
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+    });
+
+    // 
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => dropArea.classList.add('highlight'), false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, () => dropArea.classList.remove('highlight'), false);
+    });
+
+    // Handle dropped files
+    dropArea.addEventListener('drop', handleDrop, false);
+
+    // Handle file select
+    fileInput.addEventListener('change', updateFileName);
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (fileInput.files.length === 0 || fileInput.files[0].name !== files[0].name) {
+            fileInput.files = files; // This will also trigger 'change' event on fileInput
+            updateFileName();
+        }
+    }
+
+    function updateFileName() {
+        const fileName = fileInput.files[0]?.name;
+        if (fileName) {
+            fileNameDisplay.textContent = fileName;
+        } else {
+            fileNameDisplay.textContent = '';
+        }
+    }
+
 });
