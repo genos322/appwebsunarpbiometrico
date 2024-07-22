@@ -7,6 +7,9 @@ export default {
   ],
   theme: {
     extend: {},
+    backgroundImage: {
+      'fondo': "url('../../public/assets/sunarp.png')",
+    },
   },
   plugins: [],
 }

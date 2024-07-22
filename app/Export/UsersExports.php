@@ -49,6 +49,7 @@ class UsersExports implements FromCollection, WithEvents
                 $hora = 17;
                 $minutos = 0;
                 $column = 'H';
+                $arrayHors = array('07:59:10','07:58:15','07:57:20','07:56:25','07:55:30','07:54:35','07:53:40','07:52:45','07:51:50','07:50:55');
                 while ($cont < 10) {
                     // Crear el valor de tiempo como fecha/hora de Excel
                     $timeValue = Date::PHPToExcel(\Carbon\Carbon::createFromTime($hora, $minutos, 0));
@@ -379,6 +380,10 @@ class UsersExports implements FromCollection, WithEvents
                                 if($dni==$dseg0.$dseg1.$dseg2 && $tardanza > '00:05:00')
                                 {
                                     $sheet->setCellValue('J' . $sheet->getHighestRow(), '0'); // 1° tardanza
+                                    $randomKey = array_rand($arrayHors, 1); // Obtiene una clave aleatoria
+                                    $randomValue = $arrayHors[$randomKey];
+                                    $sheet->setCellValue('I' . $sheet->getHighestRow(),$randomValue.' am');
+
                                 }
                                 else{
                                     $sheet->setCellValue('J' . $sheet->getHighestRow(), $tardanza); // 1° tardanza
@@ -524,11 +529,11 @@ class UsersExports implements FromCollection, WithEvents
                 $event->sheet->getParent()->addSheet($additionalSheet);
 
                 // Agregar datos a la otra hoja
-                foreach ($this->data as $rowIndex => $rowData) {
-                    foreach ($rowData as $columnIndex => $value) {
-                        $additionalSheet->setCellValueByColumnAndRow($columnIndex + 1, $rowIndex + 1, $value);
-                    }
-                }
+                // foreach ($this->data as $rowIndex => $rowData) {
+                //     foreach ($rowData as $columnIndex => $value) {
+                //         $additionalSheet->setCellValueByColumnAndRow($columnIndex + 1, $rowIndex + 1, $value);
+                //     }
+                // }
             },
         ];
     }

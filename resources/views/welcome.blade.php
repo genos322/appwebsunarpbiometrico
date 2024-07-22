@@ -4,18 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>REPORTE ASISTENCIA</title>
     @vite('resources/css/app.css')
     <link rel="stylesheet" href="{{asset('plugins/datatables/datatables.min.css')}}">
     <link rel="stylesheet" href="{{asset('plugins/tooltip/hint.css')}}">
     <link rel="stylesheet" href="{{asset('plugins/notify/toastify.min.css')}}">
+    {{-- <link rel="stylesheet" href="{{asset('../build/appm.css')}}"> --}}
     <script src="{{asset('plugins/notify/toastify.min.js')}}"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('assets/reporte.png') }}">
 </head>
-<body class="fondo bg-cover">
+<body class="bg-cover bg-fondo">
     <main>
         @if(Session::has('error'))
             @foreach(Session::get('error') as $error)
+            <h1 class="bg-white text-9xl">{{$error}}</h1>
             <script>
                 Toastify({
                 text: `{{$error}}`,  // Usa data.message en lugar de response['message']
@@ -36,7 +39,7 @@
             <h1 class="text-yellow-300 text-4xl font-black font-sans">GENERADOR DE REPORTES</h1>
             <section class="w-[800px] mx-auto flex flex-row mt-32 items-center justify-between">
                 <div class=" flex flex-col items-start wrap">
-                    <form id="excelForm" action="{{url('/upload')}}" method="POST" enctype="multipart/form-data">
+                    {{-- <form id="excelForm" action="{{url('/upload')}}" method="POST" enctype="multipart/form-data">
                         <div class="grid w-full max-w-xs items-center gap-1.5">
                             <input
                             class="flex w-full rounded-md border border-blue-300 border-input bg-white text-sm text-gray-900 file:border-0 file:bg-blue-400 file:text-white file:text-sm file:font-medium"
@@ -45,8 +48,21 @@
                             name="file"
                             />
                         </div>                      
-                        @csrf                        
-                    </form>
+                    </form> --}}
+                    <form class="file-upload-form text-white" id="excelForm" action="{{url('/upload')}}" method="POST" enctype="multipart/form-data">
+                        <label for="file" class="file-upload-label drop-zone" id="drop-area">
+                            <div class="file-upload-design">
+                                @csrf                        
+                                <svg viewBox="0 0 640 512" height="1em" style="fill:rgb(255 255 255);">
+                                    <path d="M144 480C64.5 480 0 415.5 0 336c0-62.8 40.2-116.2 96.2-135.9c-.1-2.7-.2-5.4-.2-8.1c0-88.4 71.6-160 160-160c59.3 0 111 32.2 138.7 80.2C409.9 102 428.3 96 448 96c53 0 96 43 96 96c0 12.2-2.3 23.8-6.4 34.6C596 238.4 640 290.1 640 352c0 70.7-57.3 128-128 128H144zm79-217c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l39-39V392c0 13.3 10.7 24 24 24s24-10.7 24-24V257.9l39 39c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0l-80 80z"></path>
+                                </svg>
+                                <p>Suelta o selecciona el archivo</p>
+                                <span class="browse-button">Buscar archivo</span>
+                                <span id="file-name" class="file-name"></span>
+                            </div>
+                            <input id="file" type="file" name="file" style="display:none;"/>
+                        </label>
+                    </form>                        
                 </div>
                 <div class="loader hidden">
                     <div class="center-body">
@@ -66,7 +82,7 @@
                 </div>
             </section>
             <div class="mt-10 pt-6 flex flex-wrap justify-around items-start item backdrop-invert-[35%] backdrop-blur-md w-[1200px] h-[720px] rounded-lg">
-                <h1 class="w-1/2 text-center text-white text-3xl font-bold font-mono">PERSONAL ENTRADA 9</h1>
+                <h1 class="w-1/2 text-center text-white text-3xl font-bold font-mono">PERSONAL ENTRADA 9 AM</h1>
                 <h1 class="w-1/2 text-center text-white text-3xl font-bold font-mono">JEFES</h1>
                 <div class="w-full text-white flex flex-row flex-wrap justify-around items-start gap-8">
                     <table id="horario9" class="bg-white display rounded-md min-h-[380px] max-h-[380px]">
@@ -128,6 +144,11 @@
             </div>
         </div>
     </main>
+    <footer>
+        <div class="flex flex-row justify-center items-center w-full h-16 bg-black text-white">
+            <p class="text-center">© {{date('Y')}} - SUNARP-ZRXIV - Todos los derechos reservados</p>
+        </div>
+    </footer>
 </body>
 </html>
 <script src="{{asset('plugins/jquery.min.js')}}"></script>
