@@ -269,9 +269,9 @@ class UsersExports implements FromCollection, WithEvents
                 foreach ($this->data as $rowIndex => $rowData) {
                     if ($rowIndex !== 0) {
                         $fullName = explode(' ', $rowData[1]);
-                        $apellidoPaterno = $fullName[0];
-                        $apellidoMaterno = $fullName[1];
-                        $nombres = $fullName[2];
+                        $apellidoPaterno = $fullName[0]?? '';
+                        $apellidoMaterno = $fullName[1]?? '';
+                        $nombres = $fullName[2]??'';
                         $date = Carbon::instance(Date::excelToDateTimeObject($rowData[3]));
                         $fecha = $date->format('d/m/Y');
                         $hora = $date->format('h:i:s a');
