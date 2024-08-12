@@ -208,6 +208,15 @@ class UsersExports implements FromCollection, WithEvents
                 $sheet->freezePane('J4');
 
                 //Crear una instancia de Carbon para el primer día del mes
+                // if (is_numeric($this->data[1][3])) {
+                //     $date = Date::excelToDateTimeObject($this->data[1][3]);
+                //     $formattedDate = $date->format('Y-m-d H:i:s');
+                // } else {
+                //     // Para formato de cadena
+                //     $formattedDate = \Carbon\Carbon::createFromFormat('d/m/Y h:i:s a', trim($this->data[1][3]))->format('Y-m-d H:i:s');
+                // }
+                return dd( $this->data);
+                // return dd($this->data[1][3], var_dump($this->data[1][3]));
                 $firstData = Carbon::instance(Date::excelToDateTimeObject($this->data[1][3]));
                 $monthDays = Carbon::createFromDate($firstData->format('Y'), $firstData->format('m'), 1);//instancia con el primer dia del mes
                 $totalDays = $monthDays->daysInMonth;
