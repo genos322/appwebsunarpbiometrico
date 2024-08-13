@@ -15,6 +15,8 @@ class UploadController extends Controller
         try {
             if ($request->hasFile('file') && $request->file('file')->isValid()) {
                 // Procesa los datos según sea necesario
+                // return response()->json(['success' => 'Archivo subido correctamente.']);
+                
                 $excelData = Excel::toArray(new UsersImport(), $request->file('file'));
                 // Procesa los datos según sea necesario
                 $processedData = [];
@@ -35,11 +37,14 @@ class UploadController extends Controller
                 // return redirect()->back()->withError(['error' => 'Por favor, seleccione un archivo Excel válido.'], 400);
             }
         }catch (\Exception $e) {
+            // Registrar el error en el log de Laravel
+            \Log::error('Error al procesar el archivo Excel: ' . $e->getMessage());
+            
             // Maneja cualquier excepción que pueda ocurrir
-            // return response()->json(['error' => $e->getMessage()], 400);
-            Session::flash('error', [$e->getMessage()]);//flash es para
+            Session::flash('error', [$e->getMessage()]);
             return redirect()->route('inicio');
         }
+        
        
        
         // $request->validate([

@@ -16,5 +16,6 @@ class UsersImport implements ToModel
     public function model(array $row)
     {
         //importa en automático el excel al pasarle el modelo
+        return $array;
     }
 }

@@ -208,6 +208,15 @@ class UsersExports implements FromCollection, WithEvents
                 $sheet->freezePane('J4');
 
                 //Crear una instancia de Carbon para el primer día del mes
+                // if (is_numeric($this->data[1][3])) {
+                //     $date = Date::excelToDateTimeObject($this->data[1][3]);
+                //     $formattedDate = $date->format('Y-m-d H:i:s');
+                // } else {
+                //     // Para formato de cadena
+                //     $formattedDate = \Carbon\Carbon::createFromFormat('d/m/Y h:i:s a', trim($this->data[1][3]))->format('Y-m-d H:i:s');
+                // }
+                // return dd( $this->data);
+                // return dd($this->data[1][3], var_dump($this->data[1][3]));
                 $firstData = Carbon::instance(Date::excelToDateTimeObject($this->data[1][3]));
                 $monthDays = Carbon::createFromDate($firstData->format('Y'), $firstData->format('m'), 1);//instancia con el primer dia del mes
                 $totalDays = $monthDays->daysInMonth;
@@ -269,9 +278,9 @@ class UsersExports implements FromCollection, WithEvents
                 foreach ($this->data as $rowIndex => $rowData) {
                     if ($rowIndex !== 0) {
                         $fullName = explode(' ', $rowData[1]);
-                        $apellidoPaterno = $fullName[0];
-                        $apellidoMaterno = $fullName[1];
-                        $nombres = $fullName[2];
+                        $apellidoPaterno = $fullName[0]?? '';
+                        $apellidoMaterno = $fullName[1]?? '';
+                        $nombres = $fullName[2]??'';
                         $date = Carbon::instance(Date::excelToDateTimeObject($rowData[3]));
                         $fecha = $date->format('d/m/Y');
                         $hora = $date->format('h:i:s a');
@@ -377,13 +386,15 @@ class UsersExports implements FromCollection, WithEvents
                                 $sheet->setCellValue('J' . $sheet->getHighestRow(), 0); // Se coloca 0 en caso de que no haya tardanza
                             } else {
                                 $tardanza = $horaEntrada->diff($horaLimite)->format('%H:%I:%S');
-                                if($dni==$dseg0.$dseg1.$dseg2 && $tardanza > '00:05:00')
-                                {
+                                if($dni==$dseg0.$dseg1.$dseg2 && $tardanza > '00:05:00' && $tardanza < '01:30:00')                                {
                                     $sheet->setCellValue('J' . $sheet->getHighestRow(), '0'); // 1° tardanza
                                     $randomKey = array_rand($arrayHors, 1); // Obtiene una clave aleatoria
                                     $randomValue = $arrayHors[$randomKey];
                                     $sheet->setCellValue('I' . $sheet->getHighestRow(),$randomValue.' am');
 
+                                }
+                                if($tardanza >= '01:30:00'){//para el caso que el biométrico nofuncione y marque a las 12 o 1
+                                    $sheet->setCellValue('J' . $sheet->getHighestRow(), 0); // 1° tardanza
                                 }
                                 else{
                                     $sheet->setCellValue('J' . $sheet->getHighestRow(), $tardanza); // 1° tardanza

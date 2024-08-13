@@ -1,7 +1,32 @@
 'use strict';
 document.addEventListener('DOMContentLoaded', function () {
     let btn = document.getElementById('sendExcel');
+    let btnDownload = document.getElementById('downloadFormat');
     let form = document.getElementById('excelForm');
+    btnDownload.addEventListener('click', function (e) {
+        //descargar el excel que está en assets
+        fetch(`${window.location}assets/FORMATO-ASISTENCIA.xlsx`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            // Crear un enlace temporal para descargar el archivo
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'formato asistencia.xls'; // Nombre del archivo a descargar
+            document.body.appendChild(a);
+            a.click();
+            a.remove(); // Eliminar el enlace temporal
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            console.error('Hubo un problema con la descarga:', error);
+        });
+    });       
     btn.addEventListener('click', function (e) {
         form.submit();
     });
