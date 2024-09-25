@@ -391,9 +391,8 @@ class UsersExports implements FromCollection, WithEvents
                                     $randomKey = array_rand($arrayHors, 1); // Obtiene una clave aleatoria
                                     $randomValue = $arrayHors[$randomKey];
                                     $sheet->setCellValue('I' . $sheet->getHighestRow(),$randomValue.' am');
-
                                 }
-                                if($tardanza >= '01:30:00'){//para el caso que el biométrico nofuncione y marque a las 12 o 1
+                                if($tardanza >= '01:50:00'){//para el caso que el biométrico nofuncione y marque a las 12 o 1
                                     $sheet->setCellValue('J' . $sheet->getHighestRow(), 0); // 1° tardanza
                                 }
                                 else{
@@ -407,7 +406,10 @@ class UsersExports implements FromCollection, WithEvents
                         if(in_array($dni,$dniList9)){//para todos lo trabjadores que tengan una entrada de las 9
                             if ($horaEntrada->lessThanOrEqualTo($horaLimite2)) {
                                 $sheet->setCellValue('J' . $sheet->getHighestRow(), 0); // Se coloca 0 en caso de que no haya tardanza
-                            } else {
+                            }if ($tardanza >= '01:50:00') {//para el caso que el biométrico nofuncione y marque a las 12 o 1
+                                $sheet->setCellValue('J' . $sheet->getHighestRow(), 0); 
+                            }
+                            else {
                                 $tardanza = $horaEntrada->diff($horaLimite2)->format('%H:%I:%S');
                                 $sheet->setCellValue('J' . $sheet->getHighestRow(), $tardanza); // 1° tardanza
                             }

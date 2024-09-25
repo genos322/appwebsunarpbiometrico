@@ -73,7 +73,7 @@
                       </div>
                 </div>
                 <div>
-                    <button id="downloadFormat" class="button" type="submit">
+                    <button id="downloadFormat" class="button" type="submit" style="background:#db81b3">
                         <span class="button_lg" title="info">
                             <span class="button_sl hint--top hint--success hint--large hint--rounded" 
                                 aria-label="
@@ -81,13 +81,13 @@
                                 ➡Son obligatorios los campos nombre, dni y fecha
                                 ➡El campo fecha solo se admite en ese formato" 
                                 style="margin-right: 20px">💡</span>
-                            <span class="button_text">Descargar formato de asistencia</span>
+                            <span class="button_text" style="color:black">FORMATO</span>
                         </span>
                     </button>
                     <button id="sendExcel" class="button" type="submit" style="margin-top: 20px">
                         <span class="button_lg">
-                            <span class="button_sl"></span>
-                            <span class="button_text">Descargar excel de asistencia</span>
+                            <span class="button_sl">📄</span>
+                            <span class="button_text">DESCARGAR REPORTE GENERADO</span>
                         </span>
                     </button>
                 </div>
