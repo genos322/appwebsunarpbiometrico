@@ -90,68 +90,91 @@
                             <span class="button_text">DESCARGAR REPORTE GENERADO</span>
                         </span>
                     </button>
+                    <div class="mt-5">
+                        <dialog id="favDialog" class="w-full max-w-md backdrop-blur-xl border-4 rounded-2xl">
+                                <div class="flex flex-col gap-4">
+                                    <label for="tolerancia">Ingrese la tolerancia de ingreso para los días que añadirá</label>
+                                    <select name="tolerancia" id="tolerancia" class="select select-bordered select-sm">
+                                        <option value="1">1 hora</option>
+                                        <option value="2">2 horas</option>
+                                    </select>
+                                    <input type="date">
+                                </div>
+                              <menu class="flex flex-row justify-around mt-5">
+                                <button id="cancel" type="reset" class="bg-red-700">Cancel</button>
+                                <button type="submit">Confirm</button>
+                              </menu>
+                        </dialog>
+                        <menu>
+                            <button id="updateDetails">Añadir días de tolerancia de ingreso</button>
+                        </menu>
+                    </div>
                 </div>
             </section>
-            <div class="mt-10 pt-6 flex flex-wrap justify-around items-start item backdrop-invert-[35%] backdrop-blur-md w-[1200px] h-[720px] rounded-lg">
-                <h1 class="w-1/2 text-center text-white text-3xl font-bold font-mono">PERSONAL ENTRADA 9 AM</h1>
-                <h1 class="w-1/2 text-center text-white text-3xl font-bold font-mono">JEFES</h1>
-                <div class="w-full text-white flex flex-row flex-wrap justify-around items-start gap-8">
-                    <table id="horario9" class="bg-white display rounded-md min-h-[380px] max-h-[380px]">
-                        <thead class="text-black">
-                            <tr>
-                                <th>DNI</th>
-                                <th>Nombre</th>
-                                <th>ACCIONES</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-black">
-                            @foreach ($data['dni_list'] as $item)
-                                @if($item['rol'] == 'horario9')
+            <div class="mt-10 pt-6 flex flex-wrap justify-around items-start item backdrop-invert-[35%] backdrop-blur-md md:w-[1200px] w-[720px] md:h-[720px] h-[1500px] rounded-lg">
+                <div class="w-full text-white flex md:flex-row flex-col flex-wrap md:justify-around items-center md:items-start gap-8">
+                    <div class="flex flex-col justify-center items-center">
+                        <h1 class="w-1/2 text-center text-white text-3xl font-bold font-mono">PERSONAL ENTRADA 9 AM</h1>
+                        <table id="horario9" class="bg-white display rounded-md min-h-[380px] max-h-[380px]">
+                            <thead class="text-black">
                                 <tr>
-                                    <td id="{{$item['id'].'+dni'}}" contenteditable="true" onkeyup="update('{{$item['id']}}','{{$item['dni']}}','{{$item['nombre']}}','horario9')">{{$item['dni']}}</td>
-                                    <td id="{{$item['id'].'+name'}}" contenteditable="true" onkeyup="update('{{$item['id']}}','{{$item['dni']}}','{{$item['nombre']}}','horario9')">{{$item['nombre']}}</td>
-                                    <td class="flex flex-row justify-around gap-2">
-                                        <span class="hint--bottom" aria-label="ELMINAR" onclick="deleteRow('{{$item['id']}}')">                                        <svg id="Layer_1" class="cursor-pointer" title="elminiar Usuario" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
-                                        <i class="cursor-pointer invisible hint--bottom" aria-label="Guardar" id="{{$item['id'].'+save'}}">✔</i>
-                                    </td>
+                                    <th>DNI</th>
+                                    <th>Nombre</th>
+                                    <th>ACCIONES</th>
                                 </tr>
-                                @endif
-                            @endforeach
-                        </tbody>
-                        <tfoot class="bg-black">
-                            <tr>
-                                <td colspan="3" class="!text-center"  title="Añadir Usuario"><i id="idAddUser" class=" cursor-pointer hint--top" aria-label="Añadir Usuario"s>➕</i></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                    <table id="horarioJ" class="display bg-white rounded-md min-h-[380px]">
-                        <thead class="text-black">
-                            <tr>
-                                <th>DNI</th>
-                                <th>Nombre</th>
-                                <th>ACCIONES</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-black">
-                            @foreach ($data['dni_list'] as $item)
-                                @if($item['rol'] == 'jefe')
+                            </thead>
+                            <tbody class="text-black">
+                                @foreach ($data['dni_list'] as $item)
+                                    @if($item['rol'] == 'horario9')
+                                    <tr>
+                                        <td id="{{$item['id'].'+dni'}}" contenteditable="true" onkeyup="update('{{$item['id']}}','{{$item['dni']}}','{{$item['nombre']}}','horario9')">{{$item['dni']}}</td>
+                                        <td id="{{$item['id'].'+name'}}" contenteditable="true" onkeyup="update('{{$item['id']}}','{{$item['dni']}}','{{$item['nombre']}}','horario9')">{{$item['nombre']}}</td>
+                                        <td class="flex flex-row justify-around gap-2">
+                                            <span class="hint--bottom" aria-label="ELMINAR" onclick="deleteRow('{{$item['id']}}')">                                        <svg id="Layer_1" class="cursor-pointer" title="elminiar Usuario" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
+                                            <i class="cursor-pointer invisible hint--bottom" aria-label="Guardar" id="{{$item['id'].'+save'}}">✔</i>
+                                        </td>
+                                    </tr>
+                                    @endif
+                                @endforeach
+                            </tbody>
+                            <tfoot class="bg-black">
                                 <tr>
-                                    <td id="{{$item['id'].'+dni'}}" contenteditable="true" onkeyup="update('{{$item['id']}}','{{$item['dni']}}','{{$item['nombre']}}','horario9')">{{$item['dni']}}</td>
-                                    <td id="{{$item['id'].'+name'}}" contenteditable="true" onkeyup="update('{{$item['id']}}','{{$item['dni']}}','{{$item['nombre']}}','horario9')">{{$item['nombre']}}</td>
-                                    <td class="flex flex-row justify-around gap-2">
-                                        <span class="hint--bottom" aria-label="ELMINAR" onclick="deleteRow('{{$item['id']}}')"><svg class="cursor-pointer" aria-label="Thank you!"  id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
-                                        <i class="cursor-pointer invisible hint--bottom" aria-label="Guardar" id="{{$item['id'].'+save'}}">✔</i>
-                                    </td>
+                                    <td colspan="3" class="!text-center"  title="Añadir Usuario"><i id="idAddUser" class=" cursor-pointer hint--top" aria-label="Añadir Usuario"s>➕</i></td>
                                 </tr>
-                                @endif
-                            @endforeach
-                        </tbody>
-                        <tfoot class="bg-black">
-                            <tr>
-                                <td colspan="3" class="!text-center"  title="Añadir Usuario"><i id="idAddUser1" class=" cursor-pointer hint--top" aria-label="Añadir Usuario"s>➕</i></td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="flex flex-col justify-center items-center">
+                        <h1 class="w-1/2 text-center text-white text-3xl font-bold font-mono">JEFES</h1>
+                        <table id="horarioJ" class="display bg-white rounded-md min-h-[380px]">
+                            <thead class="text-black">
+                                <tr>
+                                    <th>DNI</th>
+                                    <th>Nombre</th>
+                                    <th>ACCIONES</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-black">
+                                @foreach ($data['dni_list'] as $item)
+                                    @if($item['rol'] == 'jefe')
+                                    <tr>
+                                        <td id="{{$item['id'].'+dni'}}" contenteditable="true" onkeyup="update('{{$item['id']}}','{{$item['dni']}}','{{$item['nombre']}}','horario9')">{{$item['dni']}}</td>
+                                        <td id="{{$item['id'].'+name'}}" contenteditable="true" onkeyup="update('{{$item['id']}}','{{$item['dni']}}','{{$item['nombre']}}','horario9')">{{$item['nombre']}}</td>
+                                        <td class="flex flex-row justify-around gap-2">
+                                            <span class="hint--bottom" aria-label="ELMINAR" onclick="deleteRow('{{$item['id']}}')"><svg class="cursor-pointer" aria-label="Thank you!"  id="Layer_1" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="m3 6a6 6 0 1 1 6 6 6.006 6.006 0 0 1 -6-6zm6 8a9.01 9.01 0 0 0 -9 9 1 1 0 0 0 1 1h16a1 1 0 0 0 1-1 9.01 9.01 0 0 0 -9-9zm12.414-2 2.293-2.293a1 1 0 0 0 -1.414-1.414l-2.293 2.293-2.293-2.293a1 1 0 0 0 -1.414 1.414l2.293 2.293-2.293 2.293a1 1 0 1 0 1.414 1.414l2.293-2.293 2.293 2.293a1 1 0 0 0 1.414-1.414z"/></svg></span>
+                                            <i class="cursor-pointer invisible hint--bottom" aria-label="Guardar" id="{{$item['id'].'+save'}}">✔</i>
+                                        </td>
+                                    </tr>
+                                    @endif
+                                @endforeach
+                            </tbody>
+                            <tfoot class="bg-black">
+                                <tr>
+                                    <td colspan="3" class="!text-center"  title="Añadir Usuario"><i id="idAddUser1" class=" cursor-pointer hint--top" aria-label="Añadir Usuario"s>➕</i></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
             </div>
         </div>
     </main>
@@ -165,6 +188,7 @@
 <script src="{{asset('plugins/jquery.min.js')}}"></script>
 <script src="{{asset('plugins/datatables/datatables.min.js')}}"></script>
 <script src="{{asset('../resources/js/app.js')}}"></script>
+<script src="{{asset('../resources/js/multiple-select.js')}}"></script>
 <script>
     let table = new DataTable('#horario9',{
         info:false,

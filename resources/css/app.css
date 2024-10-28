@@ -206,4 +206,7 @@ button svg {
 .browse-button:hover {
   background-color: rgb(14, 14, 14);
 }
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+}
 
