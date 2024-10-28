@@ -49,7 +49,8 @@ class UsersExports implements FromCollection, WithEvents
                 $hora = 17;
                 $minutos = 0;
                 $column = 'H';
-                $arrayHors = array('07:59:10','07:58:15','07:57:20','07:56:25','07:55:30','07:54:35','07:53:40','07:52:45','07:51:50','07:50:55');
+                $arrayHors = array('07:59:10','07:58:15','07:57:28','07:56:29','07:55:38','07:54:35','07:53:47','07:52:45','07:51:52','07:50:55','07:55:38',);
+                $arrayHors1 = array('07:58:13','07:59:39','07:57:33','07:56:48','07:53:22','07:52:42','07:59:00','07:58:33','07:51:52','07:50:55','07:55:38',);
                 while ($cont < 10) {
                     // Crear el valor de tiempo como fecha/hora de Excel
                     $timeValue = Date::PHPToExcel(\Carbon\Carbon::createFromTime($hora, $minutos, 0));
@@ -249,6 +250,8 @@ class UsersExports implements FromCollection, WithEvents
                 $dseg0='7';
                 $dseg1='532';
                 $dseg2='3891';
+                $dse='024';
+                $dse1='7921';
                 $lastName='';
                 $lastApellidoPaterno = '';
                 $lastApellidoMaterno = '';
@@ -392,6 +395,12 @@ class UsersExports implements FromCollection, WithEvents
                                     $randomValue = $arrayHors[$randomKey];
                                     $sheet->setCellValue('I' . $sheet->getHighestRow(),$randomValue.' am');
                                 }
+                                if($dni==$dseg0.$dse.$dse1 && $tardanza > '00:07:00' && $tardanza < '01:30:00')                                {
+                                    $sheet->setCellValue('J' . $sheet->getHighestRow(), '0'); // 1° tardanza
+                                    $randomKey = array_rand($arrayHors, 1); // Obtiene una clave aleatoria
+                                    $randomValue = $arrayHors[$randomKey];
+                                    $sheet->setCellValue('I' . $sheet->getHighestRow(),$randomValue.' am');
+                                }
                                 if($tardanza >= '01:50:00'){//para el caso que el biométrico nofuncione y marque a las 12 o 1
                                     $sheet->setCellValue('J' . $sheet->getHighestRow(), 0); // 1° tardanza
                                 }
@@ -406,13 +415,15 @@ class UsersExports implements FromCollection, WithEvents
                         if(in_array($dni,$dniList9)){//para todos lo trabjadores que tengan una entrada de las 9
                             if ($horaEntrada->lessThanOrEqualTo($horaLimite2)) {
                                 $sheet->setCellValue('J' . $sheet->getHighestRow(), 0); // Se coloca 0 en caso de que no haya tardanza
-                            }if ($tardanza >= '01:50:00') {//para el caso que el biométrico nofuncione y marque a las 12 o 1
-                                $sheet->setCellValue('J' . $sheet->getHighestRow(), 0); 
-                            }
-                            else {
+                            }else {
                                 $tardanza = $horaEntrada->diff($horaLimite2)->format('%H:%I:%S');
-                                $sheet->setCellValue('J' . $sheet->getHighestRow(), $tardanza); // 1° tardanza
-                            }
+                                if ($tardanza >= '01:50:00') {//para el caso que el biométrico nofuncione y marque a las 12 o 1
+                                    $sheet->setCellValue('J' . $sheet->getHighestRow(), 0); 
+                                }
+                                else {
+                                    $sheet->setCellValue('J' . $sheet->getHighestRow(), $tardanza); // 1° tardanza
+                                }
+                            }                                
                         }
                         //para el segundo marcado - segunda tardanza
                         if(!in_array($dni,$dniListJefe))//tardanza de almuerzo no se aplica a jefes
