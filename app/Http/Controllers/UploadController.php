@@ -12,6 +12,8 @@ class UploadController extends Controller
 {
     public function upload(Request $request)
     {
+        // return dd($request->all(),$request->query());
+        // return dd($request->header('X-TXT-TOLERANCIA'),$request->query('txtTolerancia'));
         try {
             if ($request->hasFile('file') && $request->file('file')->isValid()) {
                 // Procesa los datos según sea necesario

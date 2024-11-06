@@ -18,7 +18,7 @@
     <main>
         @if(Session::has('error'))
             @foreach(Session::get('error') as $error)
-            <h1 class="bg-white text-9xl">{{$error}}</h1>
+            {{-- <h1 class="bg-white text-9xl">{{$error}}</h1> --}}
             <script>
                 Toastify({
                 text: `{{$error}}`,  // Usa data.message en lugar de response['message']
@@ -76,10 +76,10 @@
                     <button id="downloadFormat" class="button" type="submit" style="background:#db81b3">
                         <span class="button_lg" title="info">
                             <span class="button_sl hint--top hint--success hint--large hint--rounded" 
-                                aria-label="
-                                ➡Mínimo debe haber 5 registros
+                                aria-label='
+                                ➡Mínimo debe haber 5 registros &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
                                 ➡Son obligatorios los campos nombre, dni y fecha
-                                ➡El campo fecha solo se admite en ese formato" 
+                                ➡El campo fecha solo se admite en ese formato'
                                 style="margin-right: 20px">💡</span>
                             <span class="button_text" style="color:black">FORMATO</span>
                         </span>
@@ -87,22 +87,26 @@
                     <button id="sendExcel" class="button" type="submit" style="margin-top: 20px">
                         <span class="button_lg">
                             <span class="button_sl">📄</span>
-                            <span class="button_text">DESCARGAR REPORTE GENERADO</span>
+                            <span class="button_text" type="button">DESCARGAR REPORTE GENERADO</span>
                         </span>
                     </button>
                     <div class="mt-5">
                         <dialog id="favDialog" class="w-full max-w-md backdrop-blur-xl border-4 rounded-2xl">
                                 <div class="flex flex-col gap-4">
-                                    <label for="tolerancia">Ingrese la tolerancia de ingreso para los días que añadirá</label>
+                                    <label for="tolerancia">Seleccione el número de horas/minutos</label>
                                     <select name="tolerancia" id="tolerancia" class="select select-bordered select-sm">
-                                        <option value="1">1 hora</option>
-                                        <option value="2">2 horas</option>
+                                        <option value="0" selected>Seleccionar</option>
+                                        <option value="30">30 minutos</option>
+                                        <option value="60">1 hora</option>
+                                        <option value="90">1 hora y 30 minutos</option>
+                                        <option value="120">2 horas</option>
                                     </select>
-                                    <input type="date">
+                                    <label for="txtTolerancia">Ingresar las fechas del mes separados por comas</label>
+                                    <input type="text" id="txtTolerancia" name="txtTolerancia" class="border-gray-500 border-2 px-2" placeholder="1,8,15,20">
                                 </div>
                               <menu class="flex flex-row justify-around mt-5">
-                                <button id="cancel" type="reset" class="bg-red-700">Cancel</button>
-                                <button type="submit">Confirm</button>
+                                <button id="cancelT" type="reset" class="bg-red-700">Cancelar</button>
+                                <button id="btnConfirm" type="submit" onclick="confirmTolerancia()">Confirmar</button>
                               </menu>
                         </dialog>
                         <menu>
@@ -114,7 +118,7 @@
             <div class="mt-10 pt-6 flex flex-wrap justify-around items-start item backdrop-invert-[35%] backdrop-blur-md md:w-[1200px] w-[720px] md:h-[720px] h-[1500px] rounded-lg">
                 <div class="w-full text-white flex md:flex-row flex-col flex-wrap md:justify-around items-center md:items-start gap-8">
                     <div class="flex flex-col justify-center items-center">
-                        <h1 class="w-1/2 text-center text-white text-3xl font-bold font-mono">PERSONAL ENTRADA 9 AM</h1>
+                        <h1 class="w-1/2 text-center text-white text-3xl font-bold font-mono mb-8">PERSONAL ENTRADA 9 AM</h1>
                         <table id="horario9" class="bg-white display rounded-md min-h-[380px] max-h-[380px]">
                             <thead class="text-black">
                                 <tr>
@@ -145,7 +149,7 @@
                         </table>
                     </div>
                     <div class="flex flex-col justify-center items-center">
-                        <h1 class="w-1/2 text-center text-white text-3xl font-bold font-mono">JEFES</h1>
+                        <h1 class="w-1/2 text-center text-white text-3xl font-bold font-mono mb-16">JEFES</h1>
                         <table id="horarioJ" class="display bg-white rounded-md min-h-[380px]">
                             <thead class="text-black">
                                 <tr>
@@ -188,7 +192,6 @@
 <script src="{{asset('plugins/jquery.min.js')}}"></script>
 <script src="{{asset('plugins/datatables/datatables.min.js')}}"></script>
 <script src="{{asset('../resources/js/app.js')}}"></script>
-<script src="{{asset('../resources/js/multiple-select.js')}}"></script>
 <script>
     let table = new DataTable('#horario9',{
         info:false,
@@ -418,5 +421,12 @@ function deleteRow(id) {
     });
     }
 
+}
+function confirmTolerancia(){
+    let tolerancia = document.getElementById("tolerancia").value;
+    let txtTolerancia = document.getElementById('txtTolerancia').value;
+    document.getElementById('txtTolerancia').textContent = txtTolerancia;
+    favDialog.close();
+    return tolerancia+'-'+txtTolerancia;
 }
 </script>

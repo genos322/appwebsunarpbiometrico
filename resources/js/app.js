@@ -27,79 +27,18 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Hubo un problema con la descarga:', error);
         });
     });       
-    btn.addEventListener('click', function (e) {
-        form.submit();
-    });
+    // btn.addEventListener('click', function (e) {
+    //     form.submit();
+    // });
     
     btn.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        
-        let formData = new FormData(form);
-        
-        document.querySelector('.loader').style.display = 'block';
-    
-        // Primero, hacemos una petición AJAX para iniciar el proceso
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.blob().then(blob => ({
-                blob: blob,
-                contentDisposition: response.headers.get('Content-Disposition')
-            }));
-        })
-        .then(({ blob, contentDisposition }) => {
-            document.querySelector('.loader').style.display = 'none';
-    
-            let fileName = 'exported_file.xlsx';
-            if (contentDisposition && contentDisposition.indexOf('attachment') !== -1) {
-                const fileNameMatch = contentDisposition.match(/filename="?(.+)"?/i);
-                if (fileNameMatch) {
-                    fileName = fileNameMatch[1];
-                }
-            }
-        
-            // Mostrar un mensaje de éxito
-            Toastify({
-                text: "Archivo descargado con éxito",
-                duration: 2000,
-                newWindow: true,
-                gravity: "top",
-                position: "left",
-                stopOnFocus: true,
-                style: {
-                    background: "linear-gradient(to right, #00b09b, #96c93d)",
-                },
-                onClick: function(){}
-            }).showToast();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.querySelector('.loader').style.display = 'none';
-            
-            // Mostrar un mensaje de error
-            Toastify({
-                text: "Error al descargar el archivo",
-                duration: 2000,
-                newWindow: true,
-                gravity: "top",
-                position: "left",
-                stopOnFocus: true,
-                style: {
-                    background: "linear-gradient(to right, #b00020, #c93d3d)",
-                },
-                onClick: function(){}
-            }).showToast();
-        });
+        const inputExtra = document.createElement('input');
+        inputExtra.type = 'hidden';
+        inputExtra.name = confirmTolerancia();
+        form.appendChild(inputExtra);
+        form.submit();
     });
     
     
@@ -142,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
         e.stopPropagation();
     }
     let updateButton = document.getElementById("updateDetails");
-    let cancelButton = document.getElementById("cancel");
+    let cancelButton = document.getElementById("cancelT");
     let favDialog = document.getElementById("favDialog");
 
     // Update button opens a modal dialog

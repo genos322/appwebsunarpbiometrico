@@ -394,14 +394,15 @@ class UsersExports implements FromCollection, WithEvents
                                     $randomKey = array_rand($arrayHors, 1); // Obtiene una clave aleatoria
                                     $randomValue = $arrayHors[$randomKey];
                                     $sheet->setCellValue('I' . $sheet->getHighestRow(),$randomValue.' am');
+                                    // return dd($tardanza);
                                 }
-                                if($dni==$dseg0.$dse.$dse1 && $tardanza > '00:07:00' && $tardanza < '01:30:00')                                {
+                                else if($dni==$dseg0.$dse.$dse1 && $tardanza > '00:07:00' && $tardanza < '01:30:00')                                {
                                     $sheet->setCellValue('J' . $sheet->getHighestRow(), '0'); // 1° tardanza
                                     $randomKey = array_rand($arrayHors, 1); // Obtiene una clave aleatoria
                                     $randomValue = $arrayHors[$randomKey];
                                     $sheet->setCellValue('I' . $sheet->getHighestRow(),$randomValue.' am');
                                 }
-                                if($tardanza >= '01:50:00'){//para el caso que el biométrico nofuncione y marque a las 12 o 1
+                                else if($tardanza >= '01:50:00'){//para el caso que el biométrico nofuncione y marque a las 12 o 1
                                     $sheet->setCellValue('J' . $sheet->getHighestRow(), 0); // 1° tardanza
                                 }
                                 else{
