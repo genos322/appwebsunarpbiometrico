@@ -86,6 +86,10 @@ document.addEventListener('DOMContentLoaded', function () {
     let cancelButton = document.getElementById("cancelT");
     let favDialog = document.getElementById("favDialog");
 
+    document.getElementById('idclose').addEventListener('click', ()=>{
+            favDialog.close();
+    });
+
     // Update button opens a modal dialog
     updateButton.addEventListener("click", function () {
       favDialog.showModal();

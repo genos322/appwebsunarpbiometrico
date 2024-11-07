@@ -39,16 +39,6 @@
             <h1 class="text-yellow-300 text-4xl font-black font-sans">GENERADOR DE REPORTES</h1>
             <section class="w-[800px] mx-auto flex flex-row mt-32 items-center justify-between">
                 <div class=" flex flex-col items-start wrap">
-                    {{-- <form id="excelForm" action="{{url('/upload')}}" method="POST" enctype="multipart/form-data">
-                        <div class="grid w-full max-w-xs items-center gap-1.5">
-                            <input
-                            class="flex w-full rounded-md border border-blue-300 border-input bg-white text-sm text-gray-900 file:border-0 file:bg-blue-400 file:text-white file:text-sm file:font-medium"
-                            type="file"
-                            id="file"
-                            name="file"
-                            />
-                        </div>                      
-                    </form> --}}
                     <form class="file-upload-form text-white" id="excelForm" action="{{url('/upload')}}" method="POST" enctype="multipart/form-data">
                         <label for="file" class="file-upload-label drop-zone" id="drop-area">
                             <div class="file-upload-design">
@@ -87,7 +77,10 @@
                     <div class="mt-5">
                         <dialog id="favDialog" class="w-full max-w-md backdrop-blur-xl border-4 rounded-2xl">
                                 <div class="flex flex-col gap-4">
-                                    <label for="tolerancia" class="font-bold">Seleccione el número de horas/minutos</label>
+                                    <div class="flex flex-row justify-between">
+                                        <label for="tolerancia" class="font-bold">Seleccione el número de horas/minutos</label>
+                                        <span class="cursor-pointer" id="idclose">✖</span>
+                                    </div>
                                     <select name="tolerancia" id="tolerancia" class="select select-bordered select-sm">
                                         <option value="0" selected></option>
                                         <option value="30">30 minutos</option>
