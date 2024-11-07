@@ -84,25 +84,19 @@
                             <span class="button_text" style="color:black">FORMATO</span>
                         </span>
                     </button>
-                    <button id="sendExcel" class="button" type="submit" style="margin-top: 20px">
-                        <span class="button_lg">
-                            <span class="button_sl">📄</span>
-                            <span class="button_text" type="button">DESCARGAR REPORTE GENERADO</span>
-                        </span>
-                    </button>
                     <div class="mt-5">
                         <dialog id="favDialog" class="w-full max-w-md backdrop-blur-xl border-4 rounded-2xl">
                                 <div class="flex flex-col gap-4">
-                                    <label for="tolerancia">Seleccione el número de horas/minutos</label>
+                                    <label for="tolerancia" class="font-bold">Seleccione el número de horas/minutos</label>
                                     <select name="tolerancia" id="tolerancia" class="select select-bordered select-sm">
-                                        <option value="0" selected>Seleccionar</option>
+                                        <option value="0" selected></option>
                                         <option value="30">30 minutos</option>
                                         <option value="60">1 hora</option>
                                         <option value="90">1 hora y 30 minutos</option>
                                         <option value="120">2 horas</option>
                                     </select>
-                                    <label for="txtTolerancia">Ingresar las fechas del mes separados por comas</label>
-                                    <input type="text" id="txtTolerancia" name="txtTolerancia" class="border-gray-500 border-2 px-2" placeholder="1,8,15,20">
+                                    <label for="txtTolerancia" class="font-bold">Ingresar las fechas del mes separados por comas</label>
+                                    <input type="text" id="txtTolerancia" name="txtTolerancia" class="border-gray-500 border-2 px-2" placeholder="01,08,09,20">
                                 </div>
                               <menu class="flex flex-row justify-around mt-5">
                                 <button id="cancelT" type="reset" class="bg-red-700">Cancelar</button>
@@ -110,9 +104,15 @@
                               </menu>
                         </dialog>
                         <menu>
-                            <button id="updateDetails">Añadir días de tolerancia de ingreso</button>
+                            <button id="updateDetails" class="bg-green-600">⏲ Añadir días de tolerancia de ingreso</button>
                         </menu>
                     </div>
+                    <button id="sendExcel" class="button" type="submit" style="margin-top: 20px">
+                        <span class="button_lg">
+                            <span class="button_sl">📄</span>
+                            <span class="button_text" type="button">DESCARGAR REPORTE GENERADO</span>
+                        </span>
+                    </button>
                 </div>
             </section>
             <div class="mt-10 pt-6 flex flex-wrap justify-around items-start item backdrop-invert-[35%] backdrop-blur-md md:w-[1200px] w-[720px] md:h-[720px] h-[1500px] rounded-lg">
@@ -424,9 +424,9 @@ function deleteRow(id) {
 }
 function confirmTolerancia(){
     let tolerancia = document.getElementById("tolerancia").value;
-    let txtTolerancia = document.getElementById('txtTolerancia').value;
-    document.getElementById('txtTolerancia').textContent = txtTolerancia;
+    let txtTolerancia = document.getElementById('txtTolerancia');
+    txtTolerancia.textContent = txtTolerancia;
     favDialog.close();
-    return tolerancia+'-'+txtTolerancia;
+    return tolerancia+'-'+txtTolerancia.value;
 }
 </script>

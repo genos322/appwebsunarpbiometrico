@@ -27,18 +27,20 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Hubo un problema con la descarga:', error);
         });
     });       
-    // btn.addEventListener('click', function (e) {
-    //     form.submit();
-    // });
+
     
     btn.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
+        document.querySelector('.loader').style.display = 'block';
+
         const inputExtra = document.createElement('input');
         inputExtra.type = 'hidden';
-        inputExtra.name = confirmTolerancia();
+        inputExtra.name = 'txttolerancia';
+        inputExtra.value = confirmTolerancia();
         form.appendChild(inputExtra);
         form.submit();
+
     });
     
     
@@ -91,7 +93,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Form cancel button closes the dialog box
     cancelButton.addEventListener("click", function () {
-      favDialog.close();
+        let tolerancia = document.getElementById("tolerancia");
+        let txtTolerancia = document.getElementById('txtTolerancia');
+        tolerancia.value=0;
+        txtTolerancia.textContent = '';
+        txtTolerancia.value='';
+        favDialog.close();
     });
 
     function handleDrop(e) {

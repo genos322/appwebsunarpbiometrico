@@ -16,10 +16,12 @@ class UsersExports implements FromCollection, WithEvents
     use Exportable;
 
     protected $data;
+    protected $tolerancia;
 
-    public function __construct(array $data)
+    public function __construct(array $data ,$tolerancia)
     {
         $this->data = $data;
+        $this->tolerancia = $tolerancia;
     }
 
     public function collection()
@@ -49,6 +51,10 @@ class UsersExports implements FromCollection, WithEvents
                 $hora = 17;
                 $minutos = 0;
                 $column = 'H';
+                $Ttolerancia = explode("-",$this->tolerancia);
+                $horaTolerancia = $Ttolerancia[0];
+                $diasTolerancia = explode(",",$Ttolerancia[1]);
+                $arrDiasTolerancia = array_map('trim', $diasTolerancia);
                 $arrayHors = array('07:59:10','07:58:15','07:57:28','07:56:29','07:55:38','07:54:35','07:53:47','07:52:45','07:51:52','07:50:55','07:55:38',);
                 $arrayHors1 = array('07:58:13','07:59:39','07:57:33','07:56:48','07:53:22','07:52:42','07:59:00','07:58:33','07:51:52','07:50:55','07:55:38',);
                 while ($cont < 10) {
@@ -383,6 +389,17 @@ class UsersExports implements FromCollection, WithEvents
                         $horaEntrada = Carbon::createFromFormat('h:i:s a', $hEntrada);
                         $horaLimite = Carbon::createFromTime(8, 0, 0);
                         $horaLimite2 = Carbon::createFromTime(9, 0, 0);
+                        if(in_array($date-> format('d'),$arrDiasTolerancia))
+                        {
+                            $horaLimite= $horaLimite->addMinutes(intval($horaTolerancia));
+                            $horaLimite2= $horaLimite2->addMinutes(intval($horaTolerancia));
+                        }
+                        else
+                        {
+                            $horaLimite = Carbon::createFromTime(8, 0, 0);
+                            $horaLimite2 = Carbon::createFromTime(9, 0, 0);
+                        }
+                    
                         if(!in_array($dni,$dniList9) && !in_array($dni,$dniListJefe))//para todos lo trabajadores ordinarios
                         {
                             if ($horaEntrada->lessThanOrEqualTo($horaLimite)) {
