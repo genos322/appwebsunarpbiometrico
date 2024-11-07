@@ -14,36 +14,38 @@ class UploadController extends Controller
     {
         try {
             if ($request->hasFile('file') && $request->file('file')->isValid()) {
-                // Procesa los datos según sea necesario
-                // return response()->json(['success' => 'Archivo subido correctamente.']);
+                // Verificar el tipo MIME para asegurarse de que es un archivo Excel
+                $mimeType = $request->file('file')->getMimeType();
                 
-                $excelData = Excel::toArray(new UsersImport(), $request->file('file'));
+                if (!in_array($mimeType, ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'])) {
+                    Session::flash('error', ['Por favor, seleccione un archivo Excel válido.']);
+                    return redirect()->route('inicio');
+                }
+        
                 // Procesa los datos según sea necesario
+                $excelData = Excel::toArray(new UsersImport(), $request->file('file'));
+        
                 $processedData = [];
                 foreach ($excelData[0] as $row) {
-                    // Aquí procesas cada fila de datos y realizas las operaciones necesarias
-                    // Por ejemplo, podrías filtrar ciertas filas, realizar cálculos, etc.
-                    // A modo de ejemplo, simplemente almacenaremos los datos en un nuevo array
                     $processedData[] = $row;
                 }
-
+        
                 $exportFileName = 'processed_data_' . time() . '.xlsx';
-                return Excel::download(new UsersExports($processedData), $exportFileName);//exportFileName es el nombre del archivo que se descargara
-
+                return Excel::download(new UsersExports($processedData,$request->input('txttolerancia')), $exportFileName);
+        
             } else {
                 // Maneja el caso en que no se envió un archivo válido
                 Session::flash('error', ['Por favor, seleccione un archivo Excel válido.']);
                 return redirect()->route('inicio');
-                // return redirect()->back()->withError(['error' => 'Por favor, seleccione un archivo Excel válido.'], 400);
             }
-        }catch (\Exception $e) {
-            // Registrar el error en el log de Laravel
+        } catch (\Exception $e) {
             \Log::error('Error al procesar el archivo Excel: ' . $e->getMessage());
             
             // Maneja cualquier excepción que pueda ocurrir
             Session::flash('error', [$e->getMessage()]);
             return redirect()->route('inicio');
         }
+        
         
        
        
